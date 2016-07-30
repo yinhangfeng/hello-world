@@ -1,0 +1,19 @@
+{
+  "name": "npmdeptest",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "fetchie": "^0.2.8",
+    "npmlib1": "file:../npmLib1",
+    "npmtest1": "file:../npmTest1",
+    "npmtest2": "file:../npmTest2",
+    "react-native": "^0.25.1",
+    "yinhf-npmtest": "^2.0.2"
+  }
+}
