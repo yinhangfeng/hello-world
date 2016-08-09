@@ -9,6 +9,11 @@ app.use(bodyParser.json());
 
 app.use('/static', express.static(__dirname + '/static'));
 
+app.get('/error', (req, res) => {
+  console.log('/error');
+  res.status(200).send('<title>errorCode</title>errorCode<script>window.__LAB_Auth && __LAB_Auth.sendAuthResult(errorCode)</script>').end();
+});
+
 let port = process.argv[2] || 9000;
 
 var server = app.listen(port, function() {
