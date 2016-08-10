@@ -1,0 +1,39 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "24.0.1"
+
+    defaultConfig {
+        applicationId "com.example.yinhf.gradletest1"
+        minSdkVersion 15
+        targetSdkVersion 23
+        versionCode 1
+        versionName "1.0"
+    }
+    signingConfigs {
+        release {
+            storeFile file(project.RELEASE_STORE_FILE)
+            storePassword project.RELEASE_STORE_PASSWORD
+            keyAlias project.RELEASE_KEY_ALIAS
+            keyPassword project.RELEASE_KEY_PASSWORD
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    testCompile 'junit:junit:4.12'
+    compile 'com.android.support:appcompat-v7:23.4.0'
+
+    //compile project(path: ":lib2", configuration: "debug")
+    debugCompile project(path: ":lib2", configuration: "debug")
+    releaseCompile group: 'com.example.yinhf', name: 'lib2', version: '+'
+}
