@@ -1,8 +1,10 @@
 apply plugin: 'com.android.application'
+apply from: "test.gradle"
+apply from: "lab.gradle"
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion "24.0.1"
+    compileSdkVersion 24
+    buildToolsVersion "24.0.3"
 
     defaultConfig {
         applicationId "com.example.yinhf.gradletest1"
@@ -25,15 +27,29 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
         }
+
+        beta {
+
+        }
+    }
+    productFlavors {
+//        demo {
+//            applicationId "com.example.myapp.demo"
+//            versionName "1.0-demo"
+//        }
+//        full {
+//            applicationId "com.example.myapp.full"
+//            versionName "1.0-full"
+//        }
     }
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:23.4.0'
+    compile 'com.android.support:appcompat-v7:24.2.1'
 
     //compile project(path: ":lib2", configuration: "debug")
-    debugCompile project(path: ":lib2", configuration: "debug")
-    releaseCompile group: 'com.example.yinhf', name: 'lib2', version: '+'
+//    debugCompile project(path: ":lib2", configuration: "debug")
+//    releaseCompile group: 'com.example.yinhf', name: 'lib2', version: '+'
 }

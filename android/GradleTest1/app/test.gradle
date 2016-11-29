@@ -1,0 +1,50 @@
+task testCopyFiles(type: Copy) {
+    description = 'copying some file(s)....'
+    from 'src/androidTest'
+    into 'build/intermediates/assets/xxx'
+    include('**/*')
+}
+
+project.afterEvaluate {
+    println "module name ${project.name}"
+    //preBuild.dependsOn testCopyFiles
+    android.applicationVariants.all { variant -> println "applicationVariants variant: ${variant} { " +
+            "name:${variant.name}, description:${variant.description}, dirName:${variant.dirName}" +
+            ", flavorName:${variant.flavorName}, baseName:${variant.baseName}" +
+            ", mergedFlavor:${variant.mergedFlavor}" }
+
+    println "buildTypes ${android.buildTypes}"
+    println "productFlavors ${android.productFlavors}"
+
+    def buildTypes = android.buildTypes.collect { type -> type.name }
+    def productFlavors = android.productFlavors.collect { flavor -> flavor.name }
+    if (!productFlavors) productFlavors.add('')
+
+    productFlavors.each { productFlavorName ->
+        buildTypes.each { buildTypeName ->
+            def flavorNameCapitalized = "${productFlavorName.capitalize()}"
+            def buildNameCapitalized = "${buildTypeName.capitalize()}"
+            def targetName = "${flavorNameCapitalized}${buildNameCapitalized}"
+            println "xxx targetName ${targetName}"
+        }
+    }
+
+
+
+//    def targetName = "Debug"
+//
+//    testCopyFiles.dependsOn("merge${targetName}Resources")
+//
+//    [
+//        "processArmeabi-v7a${targetName}Resources",
+//        "processX86${targetName}Resources",
+//        "processUniversal${targetName}Resources",
+//        "process${targetName}Resources",
+//    ].each { name ->
+//        Task dependentTask = tasks.findByPath(name);
+//
+//        if (dependentTask != null) {
+//            dependentTask.dependsOn(testCopyFiles)
+//        }
+//    }
+}

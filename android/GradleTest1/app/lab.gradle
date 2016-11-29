@@ -1,0 +1,117 @@
+import org.apache.tools.ant.taskdefs.condition.Os
+
+def config = project.hasProperty("lab") ? project.lab : [];
+
+def elvisFile(thing) {
+    return thing ? file(thing) : null;
+}
+
+def labProjectRoot = elvisFile(config.root) ?: file("../../")
+def apkCopyDestDir = elvisFile(config.apkCopyDestDir) ?: file("../../build/outputs/android")
+
+void runBefore(String dependentTaskName, Task task) {
+    Task dependentTask = tasks.findByPath(dependentTaskName);
+    if (dependentTask != null) {
+        dependentTask.dependsOn task
+    }
+}
+
+def parseBuildLab4Output(output) {
+    def data = new HashMap()
+    output.split('\n').each { line ->
+        if (line.startsWith("version:")) {
+            data.version = line.substring(9);
+        } else if (line.startsWith("versionCode:")) {
+            data.versionCode = Integer.parseInt(line.substring(13));
+        }
+    }
+    return data;
+}
+
+def buildTime() {
+    return new Date().format("yy-MM-dd_HH-mm", TimeZone.getTimeZone("GMT+8"))
+}
+
+gradle.projectsEvaluated {
+    def buildTypes = android.buildTypes.collect { type -> type.name }
+    def productFlavors = android.productFlavors.collect { flavor -> flavor.name }
+
+    if (!productFlavors) productFlavors.add('')
+
+    productFlavors.each { productFlavorName ->
+        buildTypes.each { buildTypeName ->
+
+            def flavorNameCapitalized = "${productFlavorName.capitalize()}"
+            def buildNameCapitalized = "${buildTypeName.capitalize()}"
+            def targetName = "${flavorNameCapitalized}${buildNameCapitalized}"
+            def targetPath = productFlavorName ?
+                    "${productFlavorName}/${buildTypeName}" :
+                    "${buildTypeName}"
+
+            def configOutputDir = file("$buildDir/intermediates/assets/${targetPath}")
+
+
+            def buildLab4ConfigTaskName = "buildLab4${targetName}Config"
+
+            def currentBuildTask = tasks.create(
+                    name: buildLab4ConfigTaskName,
+                    type: Exec) {
+                group = "lab4"
+                description = "build lab4 config for ${targetName}."
+
+                workingDir labProjectRoot
+
+                standardOutput = new ByteArrayOutputStream()
+
+                if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+                    commandLine("cmd", "/c", "node", "~/work/appbuilder/lab4/library/trunk/local-cli/index.js", "build", "--platform", "android",
+                            "--module", project.name,  "--build-type", buildTypeName, "--config-only", "--output-dir", configOutputDir)
+                } else {
+                    commandLine("node", "/Users/yinhf/work/appbuilder/lab4/library/trunk/local-cli/index.js", "build", "--platform", "android",
+                            "--module", project.name,  "--build-type", buildTypeName, "--config-only", "--output-dir", configOutputDir)
+                }
+
+                doLast {
+                    def outputStr = standardOutput.toString()
+                    println outputStr
+                    def buildLab4Out =  parseBuildLab4Output(outputStr)
+                    println buildLab4Out
+                    android.applicationVariants.all { variant ->
+                        if (variant.name.capitalize() == targetName) {
+                            variant.mergedFlavor.versionCode = buildLab4Out.versionCode
+                            variant.mergedFlavor.versionName = buildLab4Out.version
+                        }
+                    }
+                }
+            }
+
+            currentBuildTask.dependsOn("merge${targetName}Resources")
+            currentBuildTask.dependsOn("merge${targetName}Assets")
+
+            runBefore("process${flavorNameCapitalized}Armeabi-v7a${buildNameCapitalized}Resources", currentBuildTask)
+            runBefore("process${flavorNameCapitalized}X86${buildNameCapitalized}Resources", currentBuildTask)
+            runBefore("processUniversal${targetName}Resources", currentBuildTask)
+            runBefore("process${targetName}Resources", currentBuildTask)
+
+            //runBefore("pre${targetName}Build", currentBuildTask)
+        }
+    }
+
+    // assembleAndCopy
+    android.applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+            println "outputFile" + output.outputFile
+            if (!output.outputFile.name.contains('unsigned')) {
+                task("assembleAndCopy${variant.name.capitalize()}", type: Copy) {
+                    from(output.outputFile)
+                    into(apkCopyDestDir)
+                    rename { fileName ->
+                        return "${fileName.substring(0, fileName.length() - 4)}-${variant.versionName}_${buildTime()}.apk"
+                    }
+                    dependsOn("assemble${variant.name.capitalize()}")
+                }
+            }
+        }
+    }
+}
+

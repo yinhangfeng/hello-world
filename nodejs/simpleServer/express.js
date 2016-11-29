@@ -14,6 +14,11 @@ app.get('/error', (req, res) => {
   res.status(200).send('<title>errorCode</title>errorCode<script>window.__LAB_Auth && __LAB_Auth.sendAuthResult(errorCode)</script>').end();
 });
 
+app.get('/', (req, res) => {
+  console.log('/');
+  res.status(200).send('Hello World!').end();
+});
+
 let port = process.argv[2] || 9000;
 
 var server = app.listen(port, function() {
