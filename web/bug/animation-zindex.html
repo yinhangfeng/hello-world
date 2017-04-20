@@ -1,0 +1,113 @@
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>web_test_index</title>
+	<style type="text/css">
+    @-webkit-keyframes lrnw-fadein {
+	from { opacity: 0;
+	}
+	to { opacity: 1;
+	}
+}
+@-moz-keyframes lrnw-fadein {
+	from { opacity: 0;
+	}
+	to { opacity: 1;
+	}
+}
+@keyframes lrnw-fadein {
+	from { opacity: 0;
+	}
+	to { opacity: 1;
+	}
+}
+
+@-webkit-keyframes lrnw-fadeout {
+	from { opacity: 1;
+	}
+	to { opacity: 0;
+	}
+}
+@-moz-keyframes lrnw-fadeout {
+	from { opacity: 1;
+	}
+	to { opacity: 0;
+	}
+}
+@keyframes lrnw-fadeout {
+	from { opacity: 1;
+	}
+	to { opacity: 0;
+	}
+}
+
+.lrnw-fadeout {
+	opacity: 0;
+	-webkit-animation-duration: 3500ms;
+	-webkit-animation-name: lrnw-fadeout;
+	-moz-animation-duration: 3500ms;
+	-moz-animation-name: lrnw-fadeout;
+	animation-duration: 3500ms;
+	animation-name: lrnw-fadeout;
+}
+
+.lrnw-fadein {
+	opacity: 1;
+	-webkit-animation-duration: 3500ms;
+	-webkit-animation-name: lrnw-fadein;
+	-moz-animation-duration: 3500ms;
+	-moz-animation-name: lrnw-fadein;
+	animation-duration: 3500ms;
+	animation-name: lrnw-fadein;
+}
+
+.hide {
+  opacity: 0;
+}
+
+#div2:hover {
+  opacity: 1;
+	-webkit-animation-duration: 3500ms;
+	-webkit-animation-name: lrnw-fadein;
+	-moz-animation-duration: 3500ms;
+	-moz-animation-name: lrnw-fadein;
+	animation-duration: 3500ms;
+	animation-name: lrnw-fadein;
+}
+	</style>
+</head>
+<body>
+	<button onclick="test1();">test1</button>
+	<button onclick="test2();">test2</button>
+	<button onclick="test3();">test3</button>
+	<button onclick="test4();">test4</button>
+
+  <div style="position: relative; width: 500px; height: 500px; background-color: #cfd8dc;">
+    <div id="div1" style="width: 200px; height: 200px; background-color:#4dd0e1; position: absolute; display: flex;">
+      <div style="width: 150px; height: 150px; z-index: 100; background-color: #aed581;"></div>
+    </div>
+    <div id="div2" class="hide" style="width: 200px; height: 200px; background-color:#5c6bc0; position: absolute; left: 50px; display: flex;">
+      <div style="width: 150px; height: 150px; z-index: 100; background-color: #ba68c8;"></div>
+    </div>
+  </div>
+	
+	<script type="text/javascript">
+    function test1() {
+      var div2 = document.getElementById('div2');
+			div2.classList.remove('hide');
+      div2.classList.add('lrnw-fadein');
+		}
+		function test2() {
+			
+		}
+
+		function test3() {
+			
+		}
+
+		function test4() {
+			
+		}
+	</script>
+</body>
+</html>

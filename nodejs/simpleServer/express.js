@@ -19,6 +19,11 @@ app.get('/', (req, res) => {
   res.status(200).send('Hello World!').end();
 });
 
+app.post('/test', (req, res) => {
+  console.log('/test', req.url, req.body);
+  res.status(200).send('Hello World!').end();
+});
+
 let port = process.argv[2] || 9000;
 
 var server = app.listen(port, function() {
