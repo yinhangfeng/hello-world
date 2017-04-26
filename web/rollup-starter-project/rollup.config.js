@@ -3,13 +3,40 @@ import babelrc from 'babelrc-rollup';
 import istanbul from 'rollup-plugin-istanbul';
 import json from 'rollup-plugin-json';
 import commonjs from 'rollup-plugin-commonjs';
+import memory from 'rollup-plugin-memory';
+import nodeResolve from 'rollup-plugin-node-resolve';
+import simpleMemory from './plugins/simple-memory';
 
 let pkg = require('./package.json');
 let external = Object.keys(pkg.dependencies);
 
 export default {
   entry: 'lib/index.js',
+  useStrict: true,
+  // treeshake: false,
   plugins: [
+    // memory 这个插件有问题 path必须设为和entry一致 且contents 需要引用原entry
+    // memory({
+    //   path: 'xxxx.js',
+    //   contents: `module.exports = function() {console.log('xxx/xxx')}`,
+    // }),
+
+    simpleMemory({
+      modules: {
+        'memory-aaa': `//memory-aaa
+        import mbbb from 'memory-bbb';
+
+        export default function() {console.log(mbbb)};
+        `,
+        'memory-bbb': `
+        //memory-bbb
+        export default {aaa: 1}`,
+        'memory-json.json': `{"aaa": 1}`,
+      },
+    }),
+    // nodeResolve({
+		// 	main: true
+		// }),
     json(),
     commonjs({
       // non-CommonJS modules will be ignored, but you can also
@@ -37,7 +64,7 @@ export default {
       // option if you know what you're doing!
       // ignore: [ 'conditional-runtime-dependency' ]
     }),
-    babel(babelrc()),
+    // babel(babelrc()),
     // istanbul({
     //   exclude: ['test/**/*', 'node_modules/**/*']
     // })
@@ -58,6 +85,12 @@ export default {
     {
       dest: 'dist/rollup-starter-project.cjs.js',
       format: 'cjs',
+      sourceMap: true
+    },
+    {
+      dest: 'dist/rollup-starter-project.iife.js',
+      format: 'iife',
+      moduleName: 'rollupStarterProject',
       sourceMap: true
     }
   ]

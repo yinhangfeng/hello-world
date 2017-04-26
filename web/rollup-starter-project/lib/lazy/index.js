@@ -1,6 +1,10 @@
 'use strict';
+// lazy/index.js
 
 const xxx = require('./xxx');
+
+// xxx
+xxx.isInited = true;
 
 module.exports = {
   get a() {

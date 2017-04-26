@@ -15,6 +15,9 @@ import aaa from './circle-ref/a';
 import ccc from './circle-ref/c';
 import lazy from './lazy';
 import importX from './import/x'
+const a111 = require('111');
+import maaa from 'memory-aaa';
+import mJson from 'memory-json.json';
 
 /**
  * Multiply two numbers together, returning the product.
@@ -32,6 +35,9 @@ export default function multiply(n, m, negative=false) {
   lazy.init();
   const lazyA = lazy.a();
   importX();
+  a111();
+  maaa();
+  console.log(mJson);
   if (n === 0 || m === 0) {
     return 0;
   } else if (n === 1) {
