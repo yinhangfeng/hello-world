@@ -64,7 +64,7 @@ export default {
       // option if you know what you're doing!
       // ignore: [ 'conditional-runtime-dependency' ]
     }),
-    // babel(babelrc()),
+    babel(babelrc()),
     // istanbul({
     //   exclude: ['test/**/*', 'node_modules/**/*']
     // })
@@ -83,12 +83,12 @@ export default {
       sourceMap: true
     },
     {
-      dest: 'dist/rollup-starter-project.cjs.js',
+      dest: 'dist/rollup-bundle.cjs.js',
       format: 'cjs',
       sourceMap: true
     },
     {
-      dest: 'dist/rollup-starter-project.iife.js',
+      dest: 'dist/rollup-bundle.iife.js',
       format: 'iife',
       moduleName: 'rollupStarterProject',
       sourceMap: true

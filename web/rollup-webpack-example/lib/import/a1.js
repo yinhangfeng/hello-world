@@ -1,6 +1,6 @@
 'use strict';
 
-// import/a.js
+// import/a1.js
 
 module.exports = {
   a: 1,
