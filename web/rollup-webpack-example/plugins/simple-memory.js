@@ -3,13 +3,14 @@ export default function memory(config = {}) {
 
   return {
     name: 'simple-memory',
-    resolveId(id) {
-      console.log('simple-memory resolveId', id);
-      return modules[id] && id;
+    resolveId(importee, importer) {
+      console.log('simple-memory resolveId', importee, importer);
+      // 可以使用Promise
+      return Promise.resolve(modules[importee] && importee + 'xxx111');
     },
     load(id) {
       console.log('simple-memory load', id);
-      return modules[id];
+      return modules[id.slice(0, id.length - 6)];
     }
   };
 }
