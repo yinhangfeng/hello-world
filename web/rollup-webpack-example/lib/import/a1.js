@@ -7,4 +7,7 @@ module.exports = {
   b() {
     console.log('b');
   },
+  get c() {
+    console.log('ccc');
+  }
 };
