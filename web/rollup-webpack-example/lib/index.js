@@ -26,7 +26,7 @@ import maaa from 'memory-aaa';
  * from other files. It also illustrates tail-call optimizations in ES6,
  * otherwise the `negative` parameter wouldn't be here.
  */
-export default function multiply(n, m, negative=false) {
+function multiply(n, m, negative=false) {
   test();
   new Test3().test3();
   new Test4().test4();
@@ -58,4 +58,5 @@ export default function multiply(n, m, negative=false) {
   }
   return negative ? -result : result;
 }
-zhi
+
+multiply();

@@ -11,6 +11,12 @@ export default function memory(config = {}) {
     load(id) {
       console.log('simple-memory load', id);
       return modules[id.slice(0, id.length - 6)];
-    }
+    },
+    // transformBundle(source, options) {
+    //   console.log('transformBundle', source.slice(0, 20) + '......', options);
+    //   return {
+    //     code: source,
+    //   };
+    // },
   };
 }

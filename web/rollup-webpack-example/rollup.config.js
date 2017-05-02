@@ -6,13 +6,17 @@ import commonjs from 'rollup-plugin-commonjs';
 import memory from 'rollup-plugin-memory';
 import nodeResolve from 'rollup-plugin-node-resolve';
 import simpleMemory from './plugins/simple-memory';
+const path = require('path');
 
 let pkg = require('./package.json');
 let external = Object.keys(pkg.dependencies);
 
+let entry = 'lib/index.js';
+entry = path.join(__dirname, entry);
+
 export default {
-  entry: 'lib/index.js',
-  useStrict: true,
+  entry,
+  useStrict: false,
   // treeshake: false,
   plugins: [
     // memory 这个插件有问题 path必须设为和entry一致 且contents 需要引用原entry
@@ -72,26 +76,31 @@ export default {
   external: external,
   targets: [
     {
-      dest: pkg.main,
-      format: 'umd',
-      moduleName: 'rollupStarterProject',
-      sourceMap: true
-    },
-    {
-      dest: pkg.module,
-      format: 'es',
-      sourceMap: true
-    },
-    {
       dest: 'dist/rollup-bundle.cjs.js',
       format: 'cjs',
       sourceMap: true
     },
-    {
-      dest: 'dist/rollup-bundle.iife.js',
-      format: 'iife',
-      moduleName: 'rollupStarterProject',
-      sourceMap: true
-    }
+    // {
+    //   dest: pkg.main,
+    //   format: 'umd',
+    //   moduleName: 'rollupStarterProject',
+    //   sourceMap: true
+    // },
+    // {
+    //   dest: pkg.module,
+    //   format: 'es',
+    //   sourceMap: true
+    // },
+    // {
+    //   dest: 'dist/rollup-bundle.iife.js',
+    //   format: 'iife',
+    //   moduleName: 'rollupStarterProject',
+    //   sourceMap: true
+    // },
+    // {
+    //   dest: 'dist/rollup-bundle.amd.js',
+    //   format: 'amd',
+    //   sourceMap: true
+    // },
   ]
 };
