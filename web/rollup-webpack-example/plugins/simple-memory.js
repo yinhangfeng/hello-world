@@ -1,4 +1,4 @@
-export default function memory(config = {}) {
+module.exports = function memory(config = {}) {
   const modules = config.modules || {};
 
   return {

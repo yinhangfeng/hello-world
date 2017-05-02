@@ -1,11 +1,11 @@
-import babel from 'rollup-plugin-babel';
-import babelrc from 'babelrc-rollup';
-import istanbul from 'rollup-plugin-istanbul';
-import json from 'rollup-plugin-json';
-import commonjs from 'rollup-plugin-commonjs';
-import memory from 'rollup-plugin-memory';
-import nodeResolve from 'rollup-plugin-node-resolve';
-import simpleMemory from './plugins/simple-memory';
+const babel = require('rollup-plugin-babel');
+const babelrc = require('babelrc-rollup').default;
+const istanbul = require('rollup-plugin-istanbul');
+const json = require('rollup-plugin-json');
+const commonjs = require('rollup-plugin-commonjs');
+const memory = require('rollup-plugin-memory');
+const nodeResolve = require('rollup-plugin-node-resolve');
+const simpleMemory = require('./plugins/simple-memory');
 const path = require('path');
 
 let pkg = require('./package.json');
@@ -14,7 +14,7 @@ let external = Object.keys(pkg.dependencies);
 let entry = 'lib/index.js';
 entry = path.join(__dirname, entry);
 
-export default {
+module.exports = {
   entry,
   useStrict: false,
   // treeshake: false,
