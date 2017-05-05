@@ -16,9 +16,14 @@ import aaa from './circle-ref/a';
 import ccc from './circle-ref/c';
 import lazy from './lazy';
 import importX from './import/x'
+import req from './import/req';
 // const a111 = require('111'); // rollup 不会处理 webpack 报错找不到module
 import maaa from 'memory-aaa';
 // import mJson from 'memory-json.json';
+
+// const lodashMerge = require('lodash/merge');
+
+import lodashMerge from 'lodash/merge';
 
 /**
  * Multiply two numbers together, returning the product.
@@ -37,6 +42,8 @@ function multiply(n, m, negative=false) {
   importX();
   a111();
   maaa();
+  lodashMerge();
+  req();
   // console.log(mJson);
   if (n === 0 || m === 0) {
     return 0;
