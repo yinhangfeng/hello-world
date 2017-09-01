@@ -5,7 +5,9 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.2'
+        classpath 'com.android.tools.build:gradle:2.3.3'
+
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -29,10 +31,10 @@ ext {
 
     repoOut = new File(project.rootDir, 'Repository') //版本库输出文件夹
 
-    BUILD_TOOLS_VERSION = '23.0.2'
-    COMPILE_SDK_VERSION = 23
+    BUILD_TOOLS_VERSION = '25.0.3'
+    COMPILE_SDK_VERSION = 25
     MIN_SDK_VERSION = 16
     TARGET_SDK_VERSION = 22
 
-    SUPPORT_VERSION = '23.4.0'
+    SUPPORT_VERSION = '25.3.1'
 }

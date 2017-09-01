@@ -1,15 +1,14 @@
 apply plugin: 'com.android.application'
 apply from: "test.gradle"
-apply from: "lab.gradle"
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion "24.0.3"
+    compileSdkVersion rootProject.ext.COMPILE_SDK_VERSION
+    buildToolsVersion rootProject.ext.BUILD_TOOLS_VERSION
 
     defaultConfig {
         applicationId "com.example.yinhf.gradletest1"
-        minSdkVersion 15
-        targetSdkVersion 23
+        minSdkVersion rootProject.ext.MIN_SDK_VERSION
+        targetSdkVersion rootProject.ext.TARGET_SDK_VERSION
         versionCode 1
         versionName "1.0"
     }
@@ -47,7 +46,7 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:24.2.1'
+    compile "com.android.support:appcompat-v7:${rootProject.ext.SUPPORT_VERSION}"
 
     //compile project(path: ":lib2", configuration: "debug")
 //    debugCompile project(path: ":lib2", configuration: "debug")

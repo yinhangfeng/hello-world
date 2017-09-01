@@ -1,12 +1,11 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion "24.0.1"
+    compileSdkVersion rootProject.ext.COMPILE_SDK_VERSION
+    buildToolsVersion rootProject.ext.BUILD_TOOLS_VERSION
 
     defaultConfig {
-        minSdkVersion 15
-        targetSdkVersion 23
+        minSdkVersion rootProject.ext.MIN_SDK_VERSION
         versionCode 1
         versionName "1.0"
     }
@@ -17,7 +16,7 @@ android {
     // 但uploadArchives发布的版本中会带上-debug -release
     // https://docs.gradle.org/current/userguide/userguide_single.html#moduleDependencies
     // 23.4.9. Dependency configurations
-    publishNonDefault true
+//    publishNonDefault true
     buildTypes {
         release {
             minifyEnabled false
@@ -28,44 +27,46 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:23.4.0'
+    compile "com.android.support:appcompat-v7:${rootProject.ext.SUPPORT_VERSION}"
 }
 
-apply plugin: 'maven'
+//apply plugin: 'maven'
+apply plugin: 'com.github.dcendents.android-maven'
+group = "com.example.yinhf"
+version = "1.0.0"
 
 //使得在开启publishNonDefault时 能够发布defaultPublishConfig到maven仓库
 //https://github.com/dcendents/android-maven-gradle-plugin/issues/11
 //http://tools.android.com/tech-docs/new-build-system/user-guide   search: publishNonDefault
-if (android.publishNonDefault) {
-    android.libraryVariants.all { variant ->
-        println '1111 variant.name=' + variant.name + ' android.defaultPublishConfig=' + android.defaultPublishConfig
-        if (variant.name == android.defaultPublishConfig) {
-            def bundleTask = tasks["bundle${name.capitalize()}"]
-            println '22222 bundleTask.archivePath=' + bundleTask.archivePath.getClass()
-            artifacts {
-                archives(bundleTask.archivePath) {
-                    classifier null
-                    builtBy bundleTask
-                }
-            }
-        }
-    }
-}
+//if (android.publishNonDefault) {
+//    android.libraryVariants.all { variant ->
+//        println '1111 variant.name=' + variant.name + ' android.defaultPublishConfig=' + android.defaultPublishConfig
+//        if (variant.name == android.defaultPublishConfig) {
+//            def bundleTask = tasks["bundle${name.capitalize()}"]
+//            println '22222 bundleTask.archivePath=' + bundleTask.archivePath.getClass()
+//            artifacts {
+//                archives(bundleTask.archivePath) {
+//                    classifier null
+//                    builtBy bundleTask
+//                }
+//            }
+//        }
+//    }
+//}
 
 uploadArchives {
     repositories {
         mavenDeployer {
             repository(url: uri(rootProject.ext.repoOut))
 
-            pom.project {
-                name 'lib1'
-                description "lib1"
-
-                groupId 'com.example.yinhf'
-                artifactId 'lib1'
-                version '1.0.0'
-            }
+//            pom.project {
+//                name 'lib1'
+//                description "lib1"
+//
+//                groupId 'com.example.yinhf'
+//                artifactId 'lib1'
+//                version '1.0.0'
+//            }
         }
     }
 }
