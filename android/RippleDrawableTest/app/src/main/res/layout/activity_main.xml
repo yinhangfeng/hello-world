@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp"
+    android:orientation="vertical"
+    tools:context="cn.yinhf.test.MainActivity">
+
+    <Button
+        android:id="@+id/test1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="test1"/>
+
+    <Button
+        android:id="@+id/test2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="test2"/>
+
+    <Button
+        android:id="@+id/test3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@android:style/Widget.Material.Button.Small"
+        android:text="test3"/>
+
+    <Button
+        android:id="@+id/test4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="30sp"
+        android:text="test4"/>
+
+    <Button
+        android:id="@+id/test5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="test5"/>
+
+
+    <cn.yinhf.test.HotspotView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_margin="20dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="xxxx"
+            android:layout_gravity="center"/>
+    </cn.yinhf.test.HotspotView>
+
+</LinearLayout>

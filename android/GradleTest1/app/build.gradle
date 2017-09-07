@@ -32,14 +32,17 @@ android {
         }
     }
     productFlavors {
-//        demo {
-//            applicationId "com.example.myapp.demo"
-//            versionName "1.0-demo"
-//        }
-//        full {
-//            applicationId "com.example.myapp.full"
-//            versionName "1.0-full"
-//        }
+        defaults {
+
+        }
+        demo {
+            applicationId "com.example.myapp.demo"
+            versionName "1.0-demo"
+        }
+        full {
+            applicationId "com.example.myapp.full"
+            versionName "1.0-full"
+        }
     }
 }
 
