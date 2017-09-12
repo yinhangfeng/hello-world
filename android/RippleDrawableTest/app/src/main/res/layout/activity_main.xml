@@ -1,55 +1,130 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="10dp"
-    android:orientation="vertical"
-    tools:context="cn.yinhf.test.MainActivity">
+    android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/test1"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="test1"/>
+        android:orientation="vertical"
+        android:padding="10dp"
+        tools:context="cn.yinhf.test.MainActivity">
 
-    <Button
-        android:id="@+id/test2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="test2"/>
-
-    <Button
-        android:id="@+id/test3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="@android:style/Widget.Material.Button.Small"
-        android:text="test3"/>
-
-    <Button
-        android:id="@+id/test4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="30sp"
-        android:text="test4"/>
-
-    <Button
-        android:id="@+id/test5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="test5"/>
-
-
-    <cn.yinhf.test.HotspotView
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_margin="20dp">
-        <TextView
+        <Button
+            android:id="@+id/btn1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="xxxx"
-            android:layout_gravity="center"/>
-    </cn.yinhf.test.HotspotView>
+            android:text="btn1" />
 
-</LinearLayout>
+        <Button
+            android:id="@+id/btn2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="btn2" />
+
+        <Button
+            android:id="@+id/btn3"
+            style="@android:style/Widget.Material.Button.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="btn3" />
+
+        <Button
+            android:id="@+id/btn4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="btn4"
+            android:textSize="30sp" />
+
+        <Button
+            android:id="@+id/btn5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="btn5" />
+
+        <Button
+            android:id="@+id/btn6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="btn6" />
+
+        <Button
+            android:id="@+id/test1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="test1"
+            android:text="test1" />
+
+        <Button
+            android:id="@+id/test2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="test2"
+            android:text="test2" />
+
+        <Button
+            android:id="@+id/test3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="test3"
+            android:text="test3" />
+
+        <Button
+            android:id="@+id/test4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="test4"
+            android:text="test4" />
+
+        <Button
+            android:id="@+id/test5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="test5"
+            android:text="test5" />
+
+        <Button
+            android:id="@+id/test6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="test6"
+            android:text="test6" />
+
+
+        <cn.yinhf.test.HotspotView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_margin="20dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="xxxx" />
+        </cn.yinhf.test.HotspotView>
+        
+        <FrameLayout
+            android:id="@+id/frame1"
+            android:layout_width="100dp"
+            android:layout_height="100dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="frame1"/>
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/frame2"
+            android:layout_width="100dp"
+            android:layout_height="100dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="frame2"/>
+        </FrameLayout>
+
+    </LinearLayout>
+
+</ScrollView>
