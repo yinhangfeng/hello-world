@@ -21,30 +21,38 @@ android {
         }
     }
     buildTypes {
+        debug {
+            buildConfigField("String", "XXX", '"debug"')
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
-        }
-
-        beta {
-
+            buildConfigField("String", "XXX", '"release"')
         }
     }
     productFlavors {
-        defaults {
-
+        product1 {
+            applicationId "com.example.myapp.product1"
+            versionName "1.0-product1"
+            buildConfigField("String", "XXX", '"product1"')
         }
-        demo {
-            applicationId "com.example.myapp.demo"
-            versionName "1.0-demo"
-        }
-        full {
-            applicationId "com.example.myapp.full"
-            versionName "1.0-full"
+        product2 {
+            applicationId "com.example.myapp.product2"
+            versionName "1.0-product2"
+            buildConfigField("String", "XXX", '"product2"')
         }
     }
 }
+
+//gradle.projectsEvaluated {
+//    def buildTypes = android.buildTypes.collect { type -> type.name }
+//    def productFlavors = android.productFlavors.collect { flavor -> flavor.name }
+//
+//    print '123456'
+//    print buildTypes
+//    print productFlavors
+//}
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
