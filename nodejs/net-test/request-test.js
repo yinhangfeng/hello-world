@@ -4,11 +4,11 @@ const request = require('request');
 
 function proxyTest() {
   request({
-    uri: 'http://localhost:9000',
+    uri: 'http://example.com',
     headers: {
-      'proxy-authorization': 'xxxx',
+      'proxy-authorization': 'b63KcA6GUfDqkmzbTp5y',
     },
-    proxy: 'http://localhost:8001',
+    proxy: 'http://example.com:7070',
     proxyHeaderWhiteList: ['proxy-authorization'],
     proxyHeaderExclusiveList: ['proxy-authorization'],
   }, (err, res, body) => {
