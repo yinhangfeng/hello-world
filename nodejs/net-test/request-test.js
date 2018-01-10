@@ -8,7 +8,7 @@ function proxyTest() {
     headers: {
       'proxy-authorization': 'b63KcA6GUfDqkmzbTp5y',
     },
-    proxy: 'http://example.com:7070',
+    // proxy: 'http://172.18.255.152:8899',
     proxyHeaderWhiteList: ['proxy-authorization'],
     proxyHeaderExclusiveList: ['proxy-authorization'],
   }, (err, res, body) => {

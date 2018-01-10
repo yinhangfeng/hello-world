@@ -12,6 +12,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
@@ -64,60 +65,59 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // 查看站点支持的ConnectionSpec:  nmap -sV --script ssl-enum-ciphers example.com
+
+        // SSLHandshakeException: Connection closed by peer  https://github.com/square/okhttp/issues/3188
         ConnectionSpec spec = new ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS)
+//                .supportsTlsExtensions(false)
                 .cipherSuites(
-                        CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
-                        CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,
-                        CipherSuite.TLS_DHE_RSA_WITH_AES_128_GCM_SHA256,
-
-                        // Note that the following cipher suites are all on HTTP/2's bad cipher suites list. We'll
-                        // continue to include them until better suites are commonly available. For example, none
-                        // of the better cipher suites listed above shipped with Android 4.4 or Java 7.
-                        CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA,
-                        CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA,
-                        CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,
-                        CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA,
-                        CipherSuite.TLS_DHE_RSA_WITH_AES_128_CBC_SHA,
-                        CipherSuite.TLS_DHE_RSA_WITH_AES_256_CBC_SHA,
-                        CipherSuite.TLS_RSA_WITH_AES_128_GCM_SHA256,
-                        CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA,
-                        CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA,
-                        CipherSuite.TLS_RSA_WITH_3DES_EDE_CBC_SHA,
-
-                        //相对于MODERN_TLS增加(不安全)
-                        CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,
-                        CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,
-                        CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384,
-                        CipherSuite.TLS_RSA_WITH_AES_256_GCM_SHA384,
-                        CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA256,
-                        CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA256,
-                        CipherSuite.TLS_ECDHE_RSA_WITH_RC4_128_SHA,
-                        CipherSuite.TLS_RSA_WITH_RC4_128_SHA
-
+//                        CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
 //                        CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,
+//                        CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,
 //                        CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,
-//                        CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,
-//                        CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384,
+//                        CipherSuite.TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256,
+//                        CipherSuite.TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256,
+//
+//                        // Note that the following cipher suites are all on HTTP/2's bad cipher suites list. We'll
+//                        // continue to include them until better suites are commonly available. For example, none
+//                        // of the better cipher suites listed above shipped with Android 4.4 or Java 7.
+//                        CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA,
+//                        CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,
+//                        CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA,
+//                        CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA,
 //                        CipherSuite.TLS_RSA_WITH_AES_128_GCM_SHA256,
 //                        CipherSuite.TLS_RSA_WITH_AES_256_GCM_SHA384,
-//                        CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA256,
-//                        CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA256
-//                        CipherSuite.TLS_ECDHE_RSA_WITH_RC4_128_SHA,
-//                        CipherSuite.TLS_RSA_WITH_RC4_128_SHA
+//                        CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA,
+//                        CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA,
+//                        CipherSuite.TLS_RSA_WITH_3DES_EDE_CBC_SHA,
+
+                        //相对于MODERN_TLS增加(不安全)
+                        CipherSuite.TLS_RSA_WITH_RC4_128_MD5,
+                        CipherSuite.TLS_RSA_WITH_RC4_128_SHA,
+                        CipherSuite.TLS_RSA_WITH_3DES_EDE_CBC_SHA,
+                        CipherSuite.TLS_RSA_WITH_DES_CBC_SHA,
+
+//                        CipherSuite.TLS_RSA_EXPORT1024_WITH_RC4_56_SHA,
+//                        CipherSuite.TLS_RSA_EXPORT1024_WITH_DES_CBC_SHA,
+                        CipherSuite.TLS_RSA_EXPORT_WITH_RC4_40_MD5
+//                        CipherSuite.TLS_RSA_EXPORT_WITH_RC2_CBC_40_MD5
                 )
+//                .tlsVersions(TlsVersion.TLS_1_0, TlsVersion.SSL_3_0)
                 .build();
 
         okHttpClient = new OkHttpClient.Builder()
                 .connectTimeout(10, TimeUnit.SECONDS)
                 .readTimeout(20, TimeUnit.SECONDS)
-                .connectionSpecs(Collections.singletonList(spec))
+
+                .connectionSpecs(Arrays.asList(spec, ConnectionSpec.CLEARTEXT))
                 .build();
     }
 
     //String url = "https://passport.alibaba.com/mini_login.htm";
     // String url = "http://www.baidu.com/";
-    String url = "https://www.1688.com/";
+//    String url = "https://www.1688.com/";
     //String url = "https://www.taobao.com/";
+    String url = "https://img1.qikan.com/qkimages/sjpl/sjpl201712-l.jpg";
 
     public void test1(View v) {
         final Request request = new Request.Builder().url(url).build();
