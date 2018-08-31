@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "argv": "node argv.js a --b c -- d --e f",
+    "argv1": "npm run argv -x -- -a"
   },
   "author": "",
   "license": "ISC",

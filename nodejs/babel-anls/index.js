@@ -6,6 +6,8 @@ const babylon = require('babylon');
 const traverse = require('babel-traverse').default;
 const t = require('babel-types');
 
+const MIN_LENGTH = 5;
+
 function anls(input, output) {
   const inputCode = fs.readFileSync(input, 'UTF8');
   const ast = babylon.parse(inputCode);
@@ -16,6 +18,9 @@ function anls(input, output) {
   traverse(ast, {
     Identifier(path) {
       const name = path.node.name;
+      if (name.length < MIN_LENGTH) {
+        return;
+      }
       if (identifierMap[name] != null) {
         ++identifierMap[name];
       } else {
@@ -26,6 +31,9 @@ function anls(input, output) {
     Literal(path) {
       const name = path.node.value;
       if (typeof name !== 'string') {
+        return;
+      }
+      if (name.length < MIN_LENGTH) {
         return;
       }
       if (literalMap[name] != null) {
@@ -92,4 +100,4 @@ function anls(input, output) {
 }
 
 // anls(path.join(__dirname, 'index.js'), path.join(__dirname, 'build/output.json'));
-anls(path.join(__dirname, '../../../lab4/lab4-2.4/build/outputs/bundle.rollup.min.js'), path.join(__dirname, 'build/output.json'));
+anls(path.join(__dirname, '../../../../Downloads/app.es6.min.js'), path.join(__dirname, 'build/output.json'));

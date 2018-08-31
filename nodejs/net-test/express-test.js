@@ -7,6 +7,11 @@ const app = express();
 
 app.use(bodyParser.json());
 
+// 模拟延迟
+app.use((req, res, next) => {
+  setTimeout(next, Math.random() * 2000);
+});
+
 app.use('/static', express.static(__dirname + '/static'));
 
 app.get('/error', (req, res) => {
@@ -19,12 +24,16 @@ app.get('/', (req, res) => {
   res.status(200).send('Hello World!').end();
 });
 
-app.post('/test', (req, res) => {
-  console.log('/test', req.url, req.body);
+app.get('/test', (req, res) => {
+  // console.log('/test', req.url, req.body);
   res.status(200).send('Hello World!').end();
 });
 
-let port = process.argv[2] || 9000;
+app.use((req, res, next) => {
+  res.status(404).send('not found').end();
+});
+
+let port = process.argv[2] || 9002;
 
 var server = app.listen(port, function() {
   var port = server.address().port;

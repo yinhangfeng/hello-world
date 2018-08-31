@@ -1,9 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 
-var qsStringify = require('qs/lib/stringify');
+const qs = require('qs');
 
-console.log(qsStringify({
+console.log(qs.stringify({
   a: 1,
   b: 'bb',
   c: [1, 2, 3],
@@ -13,6 +13,8 @@ console.log(qsStringify({
   },
   e: [],
 }));
+
+console.log(qs.parse('?a=1&b=2'));
 
 // const IMPORT_RE = /(\bimport\s+(?:[^'"]+\s+from\s+)??['"])([^\.\/'"][^\/'"]*)([^'"]*['"])/g;
 // const EXPORT_RE = /(\bexport\s+(?:[^'"]+\s+from\s+)??['"])([^\.\/'"][^\/'"]*)([^'"]*['"])/g;
