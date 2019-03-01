@@ -11,7 +11,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "currency.js": "^1.1.4",
+    "dinero.js": "^1.4.0",
     "eventemitter2": "^1.0.0",
+    "moment": "^2.22.2",
     "qs": "^6.2.1"
   }
 }
