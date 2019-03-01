@@ -1,0 +1,37 @@
+{
+  "name": "apollo-example",
+  "version": "1.0.0",
+  "private": true,
+  "description": null,
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "eject": "react-scripts eject",
+    "start-server": "nodemon server.js localhost 4000"
+  },
+  "dependencies": {
+    "apollo-boost": "^0.3.1",
+    "apollo-client": "^2.5.1",
+    "apollo-datasource-rest": "^0.3.2",
+    "apollo-link-http": "^1.5.11",
+    "apollo-server": "^2.4.8",
+    "graphql": "^14.1.1",
+    "graphql-tag": "^2.10.1",
+    "lodash": "^4.17.11",
+    "node-fetch": "^2.3.0",
+    "react": "^16.8.3",
+    "react-apollo": "^2.5.1",
+    "react-dom": "^16.8.3",
+    "react-scripts": "^2.1.5"
+  },
+  "devDependencies": {
+    "@types/graphql": "^14.0.7",
+    "nodemon": "^1.18.10"
+  },
+  "browserslist": [
+    "last 2 Chrome versions",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
+}
