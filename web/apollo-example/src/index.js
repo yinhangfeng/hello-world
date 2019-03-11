@@ -1,9 +1,10 @@
 import React from 'react';
 import { render } from 'react-dom';
-
 import ApolloClient from 'apollo-boost';
 import { ApolloProvider, Query } from 'react-apollo';
 import gql from 'graphql-tag';
+
+import CacheStandaloneExample from './CacheStandaloneExample';
 
 const client = new ApolloClient({
   uri: 'http://localhost:4000',
@@ -77,6 +78,7 @@ const App = () => (
       <button>test4</button>
       <button>test5</button>
       <ExchangeRates />
+      <CacheStandaloneExample />
     </div>
   </ApolloProvider>
 );
