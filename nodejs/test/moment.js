@@ -22,4 +22,15 @@ function testDiff() {
   console.log(d, d.seconds(), d.asSeconds());
 }
 
+function test() {
+  const m1 = moment('17:20', 'HH:mm');
+
+  console.log(m1.toString());
+
+  const m2 = moment().startOf('day').hour(m1.hour()).minute(m1.minute());
+
+  console.log(m2.toString(), moment(m2).format('hh:mm'));
+}
+
 testDiff();
+test();
