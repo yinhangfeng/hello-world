@@ -32,5 +32,22 @@ function test() {
   console.log(m2.toString(), moment(m2).format('hh:mm'));
 }
 
-testDiff();
-test();
+function testFormat() {
+  console.log(moment().format('MMMM DD dddd'));
+  console.log(moment().locale('zh-cn').format('MMMM DD dddd'));
+  console.log(moment().format('MMM Do dddd'))
+}
+
+function testEqual() {
+  const m = moment();
+
+  const m1 = moment(m).add(1, 'day');
+  const m2 = moment(m).add(1, 'day');
+
+  console.log('testEqual', m1 == m2, m1 === m2);
+}
+
+// testDiff();
+// test();
+// testFormat();
+testEqual();
