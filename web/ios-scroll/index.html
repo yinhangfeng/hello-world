@@ -1,0 +1,136 @@
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport"
+    content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no,viewport-fit=cover" />
+  <title>ios scroll</title>
+  <style type="text/css">
+    html body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      /* overflow: hidden; */
+    }
+
+    .modal-open html {
+      overflow: hidden;
+    }
+
+    .modal-open body {
+      overflow: hidden;
+    }
+
+    .content {
+      width: 100%;
+      height: 100%;
+      padding: 50px 0;
+      overflow-y: scroll;
+      /* -webkit-overflow-scrolling: touch; */
+    }
+
+    .mask {
+      background-color: rgba(0, 0, 0, 0.5);
+      position: fixed;
+      left: 0;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .modal-content {
+      width: 80%;
+      height: 50%;
+      background-color: #fff;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal-scroll {
+      overflow-y: scroll;
+      /* -webkit-overflow-scrolling: touch; */
+    }
+
+    .modal1 {}
+
+    .modal2 {}
+
+    .modal-hide {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="content">
+    <button onclick="openModal1()">modal1</button>
+    <button onclick="openModal2()">modal2</button>
+    <div style="height: 500px; background-color: #00bcd4;"></div>
+    <div style="height: 500px; background-color: #03a9f4;"></div>
+    <div class="mask modal1 modal-hide">
+      <div class="modal-content" onclick="event.stopPropagation()">
+        <div style="height: 150px;"></div>
+        <div class="modal-scroll">
+          <div style="height: 300px; background-color: #00bcd4;"></div>
+          <div style="height: 300px; background-color: #03a9f4;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="mask modal2 modal-hide">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <div style="height: 150px;"></div>
+      <div class="modal-scroll">
+        <div style="height: 300px; background-color: #00bcd4;"></div>
+        <div style="height: 300px; background-color: #03a9f4;"></div>
+      </div>
+    </div>
+  </div>
+  <script>
+    /**
+     * modal 滚动穿透问题
+     * 1. body 滚动时 body overflow hidden 就可以?
+     * 2. body 100% 内部滚动时 body 始终设置 overflow hidden 将modal通过 createPortal 放在滚动容器外面就可以?
+     */
+    const modal1 = document.querySelector('.modal1');
+    const modal2 = document.querySelector('.modal2');
+
+    window.addEventListener('scroll', (e) => {
+      console.log('window scroll window.scrollY', window.scrollY);
+    });
+
+    document.querySelector('.content').addEventListener('scroll', (e) => {
+      console.log('content scroll', e.target.scrollTop);
+    });
+
+    modal1.addEventListener('click', () => {
+      modal1.classList.add('modal-hide');
+      document.documentElement.classList.remove('modal-open');
+    });
+    modal2.addEventListener('click', () => {
+      modal2.classList.add('modal-hide');
+      document.documentElement.classList.remove('modal-open');
+    });
+
+    modal1.addEventListener('touchmove', (e) => {
+      console.log('touchmove');
+      e.stopPropagation();
+    });
+
+    function openModal1() {
+      modal1.classList.remove('modal-hide');
+      document.documentElement.classList.add('modal-open');
+    }
+
+    function openModal2() {
+      modal2.classList.remove('modal-hide');
+      document.documentElement.classList.add('modal-open');
+    }
+  </script>
+</body>
+
+</html>
