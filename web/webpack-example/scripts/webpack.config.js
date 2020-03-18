@@ -6,6 +6,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const path = require('path');
+const PreserveModulesPlugin = require('./preserve-modules-plugin');
 const getBabelConfig = require('./getBabelConfig.js');
 
 const projectRoot = path.resolve(__dirname, '../');
@@ -13,7 +14,7 @@ function projectPath(relativePath) {
   return path.resolve(projectRoot, relativePath);
 }
 
-const useMiniExtract = false;
+const useMiniExtract = true;
 
 // https://webpack.js.org/configuration
 // https://github.com/umijs/umi/blob/master/packages/af-webpack/src/getConfig.js
@@ -28,17 +29,17 @@ module.exports = function(env = { production: false } /* , argv */) {
 
   // https://github.com/browserslist/browserslist
   let browsers;
-  // if (isDev && !process.env.BUILD_DEV) {
-  //   // dev 环境只兼容新浏览器 以方便调试 增加编译速度
-  //   browsers = ['last 2 Chrome versions'];
-  // } else {
-  //   browsers = [
-  //     '>1%',
-  //     'last 4 versions',
-  //     'Firefox ESR',
-  //     'not ie < 9', // React doesn't support IE8 anyway
-  //   ];
-  // }
+  if (isDev && !process.env.BUILD_DEV) {
+    // dev 环境只兼容新浏览器 以方便调试 增加编译速度
+    browsers = ['last 2 Chrome versions'];
+  } else {
+    browsers = [
+      '>1%',
+      'last 4 versions',
+      'Firefox ESR',
+      'not ie < 9', // React doesn't support IE8 anyway
+    ];
+  }
 
   const cssOptions = {
     importLoaders: 1,
@@ -178,13 +179,18 @@ module.exports = function(env = { production: false } /* , argv */) {
         analyzerPort: process.env.ANALYZE_PORT || 8888,
         openAnalyzer: true,
       }),
+    new PreserveModulesPlugin({
+      generateChunkAssets: true,
+      // nodeModulesName: 'npm',
+      // fileExt: 'mjs',
+    }),
   ].filter(Boolean);
 
   const config = {
     mode: isDev ? 'development' : 'production',
     // entry: projectPath('src/index.tsx'),
     entry: {
-      // main: projectPath('src/index.tsx'),
+      main: projectPath('src/index.tsx'),
       // home: projectPath('src/pages/home/index.tsx'),
       xxx: projectPath('src/xxx/index.ts'),
     },

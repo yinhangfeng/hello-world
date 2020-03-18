@@ -4,6 +4,8 @@
  */
 module.exports = function anyLoader(...args) {
   console.log('any loader', this.resourcePath);
+  // console.log(args[0]);
+  // console.log();
   // console.log(Object.keys(this).map(key => {
   //   if (typeof this[key] === 'string') {
   //     return `${key}:  ${this[key]}`;
