@@ -17,6 +17,9 @@ PMCommonJsRequireDependency.Template = class PMCommonJsRequireDependencyTemplate
 
   apply(dep, source, runtime) {
     if (!dep.range) return;
+    if (!dep.module) {
+      return;
+    }
     source.replace(
       dep.range[0] + 1,
       dep.range[1] - 2,

@@ -15,7 +15,6 @@ const esExts = {
 
 /**
  * options:
- * // TODO 就算为true 产生的 thunk 也是有问题的 css thunk
  * generateChunkAssets: boolean;
  * emitNodeModules: boolean;
  * nodeModulesName: string;
@@ -26,7 +25,7 @@ const esExts = {
 class PreserveModulesPlugin {
   constructor(options) {
     this.options = {
-      generateChunkAssets: false,
+      generateChunkAssets: true,
       emitNodeModules: true,
       nodeModulesName: 'node_modules',
       fileExt: {
@@ -52,6 +51,7 @@ class PreserveModulesPlugin {
 
     compiler.hooks.compilation.tap('PreserveModulesPlugin', (compilation, params) => {
       if (compilation.compiler.isChild()) {
+        // mini-css-extract-plugin 会使用 childCompiler 不能使用本插件
         return;
       }
 
@@ -73,7 +73,18 @@ class PreserveModulesPlugin {
           return false;
         });
       }
-      
+
+      compilation.mainTemplate.hooks.renderManifest.intercept({
+        register: tap => {
+          if (tap.name === 'JavascriptModulesPlugin') {
+            // 阻止默认 js bundle 的生成
+            // https://github.com/webpack/webpack/blob/webpack-4/lib/JavascriptModulesPlugin.js#L95
+            tap.fn = (result, options) => {};
+          }
+          return tap;
+        },
+      });
+
       compilation.hooks.additionalChunkAssets.tap('PreserveModulesPlugin', () => {
         const moduleTemplate = compilation.moduleTemplates.javascript;
         const dependencyTemplates = compilation.dependencyTemplates;
@@ -81,7 +92,7 @@ class PreserveModulesPlugin {
         for (const chunk of compilation.chunks) {
           const modules = chunk.getModules();
           for (const module of modules) {
-            if (typeof module.source !== "function") {
+            if (typeof module.source !== 'function') {
               // https://github.com/webpack/webpack/blob/webpack-4/lib/JavascriptModulesPlugin.js#L88
               // CssModule
               continue;
@@ -129,9 +140,12 @@ class PreserveModulesPlugin {
       register: tap => {
         if (tap.name === 'HarmonyModulesPlugin' || tap.name === 'CommonJsPlugin') {
           // 去除 HarmonyModulesPlugin CommonJsPlugin
+          // https://github.com/webpack/webpack/blob/webpack-4/lib/dependencies/HarmonyModulesPlugin.js#L30
           const originFn = tap.fn;
           tap.fn = (compilation, params) => {
             if (compilation.compiler.isChild()) {
+              // childCompiler.hooks 直接复制自 主 complier 所以不能直接去掉 HarmonyModulesPlugin CommonJsPlugin 需要在这里判断
+              // https://github.com/webpack/webpack/blob/webpack-4/lib/Compiler.js#L577
               return originFn(compilation, params);
             }
           };

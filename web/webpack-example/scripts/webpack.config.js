@@ -180,8 +180,8 @@ module.exports = function(env = { production: false } /* , argv */) {
         openAnalyzer: true,
       }),
     new PreserveModulesPlugin({
-      generateChunkAssets: true,
-      // nodeModulesName: 'npm',
+      // generateChunkAssets: false,
+      nodeModulesName: 'npm',
       // fileExt: 'mjs',
     }),
   ].filter(Boolean);
@@ -190,7 +190,7 @@ module.exports = function(env = { production: false } /* , argv */) {
     mode: isDev ? 'development' : 'production',
     // entry: projectPath('src/index.tsx'),
     entry: {
-      main: projectPath('src/index.tsx'),
+      // main: projectPath('src/index.tsx'),
       // home: projectPath('src/pages/home/index.tsx'),
       xxx: projectPath('src/xxx/index.ts'),
     },

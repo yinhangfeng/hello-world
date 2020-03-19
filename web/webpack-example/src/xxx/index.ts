@@ -2,10 +2,10 @@
 // import { test2 } from './test2';
 // import test5 from './test5';
 // import isNull from 'lodash/isNull';
-import './index.less';
+// import styles from './index.module.less';
 
 function test() {
-  test1();
+  test1(styles.aaa);
 }
 test1();
 test2();
