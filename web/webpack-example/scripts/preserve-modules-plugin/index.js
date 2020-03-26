@@ -92,15 +92,18 @@ class PreserveModulesPlugin {
         for (const chunk of compilation.chunks) {
           const modules = chunk.getModules();
           for (const module of modules) {
-            if (typeof module.source !== 'function') {
-              // https://github.com/webpack/webpack/blob/webpack-4/lib/JavascriptModulesPlugin.js#L88
-              // CssModule
+            if (!(module instanceof NormalModule)) {
               continue;
             }
-            if (module instanceof ContextModule) {
-              // require('xxx/' + xxx)
-              continue;
-            }
+            // if (typeof module.source !== 'function') {
+            //   // https://github.com/webpack/webpack/blob/webpack-4/lib/JavascriptModulesPlugin.js#L88
+            //   // CssModule
+            //   continue;
+            // }
+            // if (module instanceof ContextModule) {
+            //   // require('xxx/' + xxx)
+            //   continue;
+            // }
             // const moduleSource = moduleTemplate.render(module, dependencyTemplates, {
             //   chunk
             // });

@@ -15,6 +15,7 @@ function projectPath(relativePath) {
 }
 
 const useMiniExtract = true;
+const preserveModules = true;
 
 // https://webpack.js.org/configuration
 // https://github.com/umijs/umi/blob/master/packages/af-webpack/src/getConfig.js
@@ -179,7 +180,7 @@ module.exports = function(env = { production: false } /* , argv */) {
         analyzerPort: process.env.ANALYZE_PORT || 8888,
         openAnalyzer: true,
       }),
-    new PreserveModulesPlugin({
+      preserveModules && new PreserveModulesPlugin({
       // generateChunkAssets: false,
       nodeModulesName: 'npm',
       // fileExt: 'mjs',
@@ -209,6 +210,11 @@ module.exports = function(env = { production: false } /* , argv */) {
     devServer: isDev
       ? {
           port: 9007,
+          disableHostCheck: true,
+          writeToDisk: true,
+          // noInfo: true,
+          // 必须关闭 inline 否则不兼容 PreserveModulesPlugin
+          inline: !preserveModules,
         }
       : {},
     bail: !isDev,
