@@ -4,6 +4,7 @@ import test5 from './test5';
 import isNull from 'lodash/isNull';
 import styles from './index.module.less';
 
+// webpack 简单依赖测试
 function test() {
   test1(styles.aaa);
 }

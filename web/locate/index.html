@@ -1,0 +1,93 @@
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>web_test_index</title>
+  <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1,minimum-scale=1">
+  <style type="text/css">
+    body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+
+<body>
+  <button onclick="test1()">test1</button>
+  <button onclick="test2()">test2</button>
+  <button onclick="test3()">test3</button>
+  <button onclick="test4()">test4</button>
+
+  <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.15&key=c30ea53d21148bd47ab0f5235855eb3f&plugin=AMap.CitySearch,AMap.Geolocation"></script>
+  <script>
+    function test1() {
+      navigator.geolocation.getCurrentPosition((position) => {
+        console.log('getCurrentPosition', position);
+        alert('success ' + JSON.stringify(position));
+      }, (err) => {
+        console.log('getCurrentPosition error', err);
+        alert('error ' + err.message);
+      });
+    }
+
+    function test2() {
+      var geolocation = new AMap.Geolocation({
+        // 是否使用高精度定位，默认：true
+        enableHighAccuracy: true,
+        // 设置定位超时时间，默认：无穷大
+        timeout: 10000,
+        // 定位按钮的停靠位置的偏移量，默认：Pixel(10, 20)
+        buttonOffset: new AMap.Pixel(10, 20),
+        //  定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
+        zoomToAccuracy: true,
+        //  定位按钮的排放位置,  RB表示右下
+        buttonPosition: 'RB'
+      })
+
+      geolocation.getCurrentPosition()
+      AMap.event.addListener(geolocation, 'complete', onComplete)
+      AMap.event.addListener(geolocation, 'error', onError)
+
+      function onComplete(data) {
+        console.log('AMap.Geolocation onComplete', data)
+      }
+
+      function onError(data) {
+        console.log('AMap.Geolocation onError', data)
+      }
+    }
+
+    function test3() {
+      var citySearch = new AMap.CitySearch()
+      citySearch.getLocalCity(function (status, result) {
+        if (status === 'complete' && result.info === 'OK') {
+          // 查询成功，result即为当前所在城市信息
+
+        }
+        console.log('AMap.CitySearch', status, result);
+      })
+    }
+
+    function test4() {
+      alert(navigator.userAgent)
+      fetch(`https://restapi.amap.com/v3/ip?key=c30ea53d21148bd47ab0f5235855eb3f`).then((res) => {
+        return res.json();
+      }).then(data => {
+        console.log('test4', data);
+      });
+    }
+
+
+    document.addEventListener("visibilitychange", function () {
+      document.title = document.hidden ? "用户离开了" : "用户回来了";
+
+      console.log('visibilitychange', document.hidden);
+    });
+  </script>
+  <script
+    src="//g.alicdn.com/code/npm/??react/16.8.4/umd/react.development.js,react-dom/16.8.4/umd/react-dom.development.js"></script>
+  <script src="//g.alicdn.com/mwdk/jarvis/0.4.15/main.js"></script>
+</body>
+
+</html>

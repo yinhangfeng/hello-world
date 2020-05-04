@@ -15,7 +15,7 @@ function projectPath(relativePath) {
 }
 
 const useMiniExtract = true;
-const preserveModules = true;
+const preserveModules = false;
 
 // https://webpack.js.org/configuration
 // https://github.com/umijs/umi/blob/master/packages/af-webpack/src/getConfig.js
@@ -65,7 +65,7 @@ module.exports = function(env = { production: false } /* , argv */) {
   };
   const lessOptions = {
     // modifyVars: theme,
-    javascriptEnabled: true,
+    // javascriptEnabled: true,
   };
 
   function getCSSLoader({ cssModules, less } = {}) {
@@ -159,9 +159,9 @@ module.exports = function(env = { production: false } /* , argv */) {
       // 'process.env.NODE_ENV': JSON.stringify(isDev ? 'development' : 'production'),
       __DEV__: isDev,
     }),
-    // new HTMLWebpackPlugin({
-    //   template: projectPath('src/document.ejs'),
-    // }),
+    new HTMLWebpackPlugin({
+      template: projectPath('src/document.ejs'),
+    }),
     // https://github.com/Urthen/case-sensitive-paths-webpack-plugin
     new CaseSensitivePathsPlugin(),
     // https://doc.webpack-china.org/plugins/ignore-plugin 忽略 moment 的本地化内容
@@ -191,9 +191,10 @@ module.exports = function(env = { production: false } /* , argv */) {
     mode: isDev ? 'development' : 'production',
     // entry: projectPath('src/index.tsx'),
     entry: {
-      // main: projectPath('src/index.tsx'),
+      // main: projectPath('src/index.tsx'), // react 项目
       // home: projectPath('src/pages/home/index.tsx'),
-      xxx: projectPath('src/xxx/index.ts'),
+      // xxx: projectPath('src/xxx/index.ts'), // 简单依赖
+      chunk: projectPath('src/trunk/index.ts'), // chunk 测试
     },
     output: {
       path: outputPath,
@@ -269,6 +270,11 @@ module.exports = function(env = { production: false } /* , argv */) {
     performance: {
       hints: false,
     },
+    optimization: {
+      splitChunks: {
+        chunks: 'initial'
+      }
+    }
   };
 
   return config;
