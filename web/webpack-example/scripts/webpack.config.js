@@ -15,7 +15,7 @@ function projectPath(relativePath) {
 }
 
 const useMiniExtract = true;
-const preserveModules = false;
+const preserveModules = true;
 
 // https://webpack.js.org/configuration
 // https://github.com/umijs/umi/blob/master/packages/af-webpack/src/getConfig.js
@@ -159,9 +159,9 @@ module.exports = function(env = { production: false } /* , argv */) {
       // 'process.env.NODE_ENV': JSON.stringify(isDev ? 'development' : 'production'),
       __DEV__: isDev,
     }),
-    new HTMLWebpackPlugin({
-      template: projectPath('src/document.ejs'),
-    }),
+    // new HTMLWebpackPlugin({
+    //   template: projectPath('src/document.ejs'),
+    // }),
     // https://github.com/Urthen/case-sensitive-paths-webpack-plugin
     new CaseSensitivePathsPlugin(),
     // https://doc.webpack-china.org/plugins/ignore-plugin 忽略 moment 的本地化内容
@@ -193,8 +193,10 @@ module.exports = function(env = { production: false } /* , argv */) {
     entry: {
       // main: projectPath('src/index.tsx'), // react 项目
       // home: projectPath('src/pages/home/index.tsx'),
-      // xxx: projectPath('src/xxx/index.ts'), // 简单依赖
-      chunk: projectPath('src/trunk/index.ts'), // chunk 测试
+      xxx: projectPath('src/xxx/index.ts'), // 简单依赖
+      // 直接写在 entry 中的loader 是最后执行的
+      // xxx: `${require.resolve('./entryLoader')}!${projectPath('src/xxx/index.ts')}`,
+      // chunk: projectPath('src/trunk/index.ts'), // chunk 测试
     },
     output: {
       path: outputPath,
@@ -240,11 +242,18 @@ module.exports = function(env = { production: false } /* , argv */) {
     },
     module: {
       rules: [
+        // anyLoader 在 babelLoader 前面，所以后于 babelLoader 执行
         {
           test: /.+/,
           exclude: /\.ejs$/,
           loader: require.resolve('./anyLoader'),
         },
+        // {
+        //   // test 可以是正则 绝对路径 或者函数
+        //   // https://webpack.js.org/configuration/module/#ruletest
+        //   test: projectPath('src/xxx/index.ts'),
+        //   loader: require.resolve('./entryLoader'),
+        // },
         // {
         //   test: /\.(js|mjs|jsx|ts|tsx)$/,
         //   loader: require.resolve('./emitFileLoader'),

@@ -18,8 +18,9 @@ class PMHarmonyModulesPlugin {
     const handler = (parser, parserOptions) => {
       if (parserOptions.harmony !== undefined && !parserOptions.harmony) return;
 
+      // https://github.com/webpack/webpack/blob/webpack-4/lib/dependencies/HarmonyImportDependencyParserPlugin.js#L29
+      // import xxx
       parser.hooks.import.tap('PMHarmonyModulesPlugin', (statement, source) => {
-        // https://github.com/webpack/webpack/blob/webpack-4/lib/dependencies/HarmonyImportDependencyParserPlugin.js#L29
         const sideEffectDep = new PMHarmonyImportSideEffectDependency(
           source,
           statement.source.range,
@@ -28,6 +29,22 @@ class PMHarmonyModulesPlugin {
         parser.state.module.addDependency(sideEffectDep);
         return true;
       });
+
+      // https://github.com/webpack/webpack/blob/webpack-4/lib/dependencies/HarmonyExportDependencyParserPlugin.js#L133
+      // export xxx from
+      // 处理方式与 import 相同，不需要 HarmonyExportImportedSpecifierDependency
+      parser.hooks.exportImportSpecifier.tap(
+        "HarmonyExportDependencyParserPlugin",
+        (statement, source) => {
+          const sideEffectDep = new PMHarmonyImportSideEffectDependency(
+            source,
+            statement.source.range,
+            parser.state.module
+          );
+          parser.state.module.addDependency(sideEffectDep);
+          return true;
+        }
+      );
     };
 
     normalModuleFactory.hooks.parser.for('javascript/auto').tap('PMHarmonyModulesPlugin', handler);
