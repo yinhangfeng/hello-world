@@ -21,6 +21,8 @@ const esExts = {
  * fileExt: string | {
  *   [key: string]: string;
  * };
+ * outputPath: string; // 输出文件夹，相对于 webpack outputPath
+ * TODO 在不需要重命名 node_modules 时提供参数保留包名依赖?
  */
 class PreserveModulesPlugin {
   constructor(options) {
@@ -114,11 +116,11 @@ class PreserveModulesPlugin {
               moduleTemplate.type
             );
 
-            let relativeModulePath = path.relative(contextPath, module.resource);
-            if (options.moveNodeModules && relativeModulePath.startsWith('node_modules')) {
-              relativeModulePath = `${options.nodeModulesName}${relativeModulePath.slice(12)}`;
+            let modulePath = path.relative(contextPath, module.resource);
+            if (options.moveNodeModules && modulePath.startsWith('node_modules')) {
+              modulePath = `${options.nodeModulesName}${modulePath.slice(12)}`;
             }
-            const ext = path.extname(relativeModulePath).slice(1);
+            const ext = path.extname(modulePath).slice(1);
             if (ext) {
               if (esExts[ext]) {
                 let newExt = options.fileExt[ext];
@@ -126,14 +128,17 @@ class PreserveModulesPlugin {
                   newExt = options.fileExt.default;
                 }
                 if (newExt != null) {
-                  relativeModulePath = relativeModulePath.slice(0, -ext.length) + newExt;
+                  modulePath = modulePath.slice(0, -ext.length) + newExt;
                 }
               } else {
                 // 资源文件增加 js 后缀
-                relativeModulePath += '.js';
+                modulePath += '.js';
               }
             }
-            compilation.emitAsset(relativeModulePath, moduleSource);
+            if (options.outputPath) {
+              modulePath = path.join(options.outputPath, modulePath);
+            }
+            compilation.emitAsset(modulePath, moduleSource);
           }
         }
       });
@@ -176,6 +181,7 @@ class PreserveModulesPlugin {
       module.resource.startsWith(this.nodeModulesPath) &&
       !originModule.context.startsWith(this.nodeModulesPath)
     ) {
+      // TODO node_modules 可能在某个文件名上
       requirePath = requirePath.replace('node_modules', nodeModulesName);
     }
 

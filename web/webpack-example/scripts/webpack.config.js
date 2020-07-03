@@ -183,6 +183,7 @@ module.exports = function(env = { production: false } /* , argv */) {
       preserveModules && new PreserveModulesPlugin({
       // generateChunkAssets: false,
       nodeModulesName: 'npm',
+      // outputPath: 'test',
       // fileExt: 'mjs',
     }),
   ].filter(Boolean);
