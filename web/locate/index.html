@@ -19,14 +19,24 @@
   <button onclick="test3()">test3</button>
   <button onclick="test4()">test4</button>
 
-  <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.15&key=c30ea53d21148bd47ab0f5235855eb3f&plugin=AMap.CitySearch,AMap.Geolocation"></script>
+  <pre id="log"></pre>
+
+  <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.15&key=3e36c387181229389f20d6a4a9adcea4&plugin=AMap.CitySearch,AMap.Geolocation"></script>
   <script>
+    var logDiv = document.getElementById('log');
+    function log() {
+      var args = Array.prototype.slice.call(arguments);
+      console.log.apply(console, args);
+
+      logDiv.innerText += JSON.stringify(args) + '\n\n';
+    }
+
     function test1() {
       navigator.geolocation.getCurrentPosition((position) => {
-        console.log('getCurrentPosition', position);
+        log('getCurrentPosition', position);
         alert('success ' + JSON.stringify(position));
       }, (err) => {
-        console.log('getCurrentPosition error', err);
+        log('getCurrentPosition error', err);
         alert('error ' + err.message);
       });
     }
@@ -50,11 +60,11 @@
       AMap.event.addListener(geolocation, 'error', onError)
 
       function onComplete(data) {
-        console.log('AMap.Geolocation onComplete', data)
+        log('AMap.Geolocation onComplete', data)
       }
 
       function onError(data) {
-        console.log('AMap.Geolocation onError', data)
+        log('AMap.Geolocation onError', data)
       }
     }
 
@@ -65,25 +75,19 @@
           // 查询成功，result即为当前所在城市信息
 
         }
-        console.log('AMap.CitySearch', status, result);
+        log('AMap.CitySearch', status, result);
       })
     }
 
     function test4() {
-      alert(navigator.userAgent)
+      // alert(navigator.userAgent)
       fetch(`https://restapi.amap.com/v3/ip?key=c30ea53d21148bd47ab0f5235855eb3f`).then((res) => {
+        log('xxxx', res)
         return res.json();
       }).then(data => {
-        console.log('test4', data);
+        log('test4', data);
       });
     }
-
-
-    document.addEventListener("visibilitychange", function () {
-      document.title = document.hidden ? "用户离开了" : "用户回来了";
-
-      console.log('visibilitychange', document.hidden);
-    });
   </script>
   <script
     src="//g.alicdn.com/code/npm/??react/16.8.4/umd/react.development.js,react-dom/16.8.4/umd/react-dom.development.js"></script>

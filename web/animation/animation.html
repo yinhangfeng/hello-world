@@ -1,0 +1,126 @@
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>animation test</title>
+  <meta name="viewport"
+    content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no,viewport-fit=cover">
+  <style type="text/css">
+    html {
+      height: 100%;
+    }
+
+    body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: #ddd;
+    }
+
+    .anim-area {
+      width: 100%;
+      height: 80%;
+      position: relative;
+    }
+
+    .anim-div {
+      width: 100px;
+      height: 100px;
+      background-color: #64B5F6;
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div style="display: flex;">
+    <button onclick="test1()">test1</button>
+    <button onclick="test2()">test2</button>
+    <button onclick="test3()">test3</button>
+    <button onclick="test4()">test4</button>
+  </div>
+
+  <div class="anim-area">
+    <div class="anim-div" />
+  </div>
+
+  <script>
+    function animate({
+      startValue,
+      endValue,
+      duration,
+      interpolator,
+      callback,
+    }) {
+      let startTime;
+      let isRunning = false;
+
+      function doAnimationFrame() {
+        let fraction = (Date.now() - startTime) / duration;
+        if (fraction >= 1) {
+          isRunning = false;
+          fraction = 1;
+        }
+
+        const interpolatedFraction = interpolator(fraction);
+        const currentValue = startValue + (endValue - startValue) * interpolatedFraction;
+
+        callback(currentValue, interpolatedFraction);
+
+        if (isRunning) {
+          requestAnimationFrame(doAnimationFrame);
+        }
+      }
+
+      return {
+        start() {
+          startTime = Date.now();
+          isRunning = true;
+          doAnimationFrame();
+        },
+      };
+    }
+
+    function linear(x) {
+      return x;
+    }
+
+    function easeInOut(x) {
+      return x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2;
+    }
+
+
+    function test1() {
+      const div = document.querySelector('.anim-div');
+
+      animate({
+        startValue: 0,
+        endValue: 400,
+        duration: 800,
+        interpolator: linear,
+        callback: (v) => {
+          div.style.transform = `translateX(${v}px)`;
+        },
+      }).start();
+    }
+
+    function test2() {
+      const div = document.querySelector('.anim-div');
+
+      animate({
+        startValue: 0,
+        endValue: 400,
+        duration: 800,
+        interpolator: easeInOut,
+        callback: (v) => {
+          div.style.transform = `translateX(${v}px)`;
+        },
+      }).start();
+    }
+  </script>
+</body>
+
+</html>

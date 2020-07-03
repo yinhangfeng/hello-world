@@ -1,0 +1,57 @@
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>web_test_index</title>
+  <meta name="viewport"
+    content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no,viewport-fit=cover">
+  <style type="text/css">
+    html {
+      height: 100%;
+    }
+
+    body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: #ddd;
+    }
+
+    .out {
+      width: 100%;
+      height: 48px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      padding-left: 15px;
+      padding-right: 54px;
+    }
+
+    .scroll {
+      flex: 1 1 0;
+      overflow-x: auto;
+      display: flex;
+      flex-direction: row;
+      position: relative;
+    }
+
+    .item {
+      width: 500px;
+      height: 50px;
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="out">
+    <div>xxxx</div>
+    <div class="scroll">
+      <div class="item" style="background-color: #fdd;"></div>
+      <div class="item" style="background-color: #ddf;"></div>
+    </div>
+  </div>
+</body>
+
+</html>

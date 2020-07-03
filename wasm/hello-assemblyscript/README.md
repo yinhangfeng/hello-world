@@ -1,0 +1,1 @@
+https://www.assemblyscript.org/quick-start.html
