@@ -1,10 +1,12 @@
 const path = require('path');
-const ContextModule = require('webpack/lib/ContextModule');
 const NormalModule = require('webpack/lib/NormalModule');
+const RawModule = require('webpack/lib/RawModule');
 const PMHarmonyModulesPlugin = require('./PMHarmonyModulesPlugin');
 const PMCommonJsPlugin = require('./PMCommonJsPlugin');
 
-const regexExt = /\.[^\\//]+$/;
+// const regexExt = /\.[^\\//]+$/;
+// TODO
+const regexNodeModules = /node_modules/g;
 const esExts = {
   js: true,
   jsx: true,
@@ -77,7 +79,7 @@ class PreserveModulesPlugin {
       }
 
       compilation.mainTemplate.hooks.renderManifest.intercept({
-        register: tap => {
+        register: (tap) => {
           if (tap.name === 'JavascriptModulesPlugin') {
             // 阻止默认 js bundle 的生成
             // https://github.com/webpack/webpack/blob/webpack-4/lib/JavascriptModulesPlugin.js#L95
@@ -94,7 +96,8 @@ class PreserveModulesPlugin {
         for (const chunk of compilation.chunks) {
           const modules = chunk.getModules();
           for (const module of modules) {
-            if (!(module instanceof NormalModule)) {
+            if (!(module instanceof NormalModule) && !(module instanceof RawModule)) {
+              console.log('过滤掉非 NormalModule', module.constructor.name, module.resource);
               continue;
             }
             // if (typeof module.source !== 'function') {
@@ -118,7 +121,8 @@ class PreserveModulesPlugin {
 
             let modulePath = path.relative(contextPath, module.resource);
             if (options.moveNodeModules && modulePath.startsWith('node_modules')) {
-              modulePath = `${options.nodeModulesName}${modulePath.slice(12)}`;
+              // modulePath = `${options.nodeModulesName}${modulePath.slice(12)}`;
+              modulePath = modulePath.replace(regexNodeModules, options.nodeModulesName);
             }
             const ext = path.extname(modulePath).slice(1);
             if (ext) {
@@ -145,14 +149,20 @@ class PreserveModulesPlugin {
     });
 
     compiler.hooks.compilation.intercept({
-      register: tap => {
-        if (tap.name === 'HarmonyModulesPlugin' || tap.name === 'CommonJsPlugin') {
-          // 去除 HarmonyModulesPlugin CommonJsPlugin
+      register: (tap) => {
+        if (
+          tap.name === 'HarmonyModulesPlugin' ||
+          tap.name === 'CommonJsPlugin' ||
+          tap.name === 'CommonJsStuffPlugin'
+        ) {
+          // 去除 HarmonyModulesPlugin CommonJsPlugin CommonJsStuffPlugin
           // https://github.com/webpack/webpack/blob/webpack-4/lib/dependencies/HarmonyModulesPlugin.js#L30
+          // https://github.com/webpack/webpack/blob/webpack-4/lib/CommonJsStuffPlugin.js#L78
           const originFn = tap.fn;
           tap.fn = (compilation, params) => {
             if (compilation.compiler.isChild()) {
-              // childCompiler.hooks 直接复制自 主 complier 所以不能直接去掉 HarmonyModulesPlugin CommonJsPlugin 需要在这里判断
+              // childCompiler.hooks 直接复制自 主 complier 所以不能直接去掉 HarmonyModulesPlugin CommonJsPlugin CommonJsStuffPlugin 需要在这里判断
+              // MiniCssExtractPlugin 会使用 child compiler
               // https://github.com/webpack/webpack/blob/webpack-4/lib/Compiler.js#L577
               return originFn(compilation, params);
             }
@@ -178,11 +188,10 @@ class PreserveModulesPlugin {
     }
     if (
       moveNodeModules &&
-      module.resource.startsWith(this.nodeModulesPath) &&
-      !originModule.context.startsWith(this.nodeModulesPath)
+      module.resource.startsWith(this.nodeModulesPath)
+      // && !originModule.context.startsWith(this.nodeModulesPath)
     ) {
-      // TODO node_modules 可能在某个文件名上
-      requirePath = requirePath.replace('node_modules', nodeModulesName);
+      requirePath = requirePath.replace(regexNodeModules, nodeModulesName);
     }
 
     return requirePath;

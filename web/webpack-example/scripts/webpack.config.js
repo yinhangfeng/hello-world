@@ -20,7 +20,7 @@ const preserveModules = true;
 // https://webpack.js.org/configuration
 // https://github.com/umijs/umi/blob/master/packages/af-webpack/src/getConfig.js
 // https://github.com/umijs/umi/blob/master/packages/bundler-webpack/src/getConfig/getConfig.ts
-module.exports = function(env = { production: false } /* , argv */) {
+module.exports = function (env = { production: false } /* , argv */) {
   if (env.production) {
     // babel-preset-umi 是根据 NODE_ENV 判断的
     process.env.NODE_ENV = 'production';
@@ -124,7 +124,7 @@ module.exports = function(env = { production: false } /* , argv */) {
   ];
 
   if (!isDev || useMiniExtract) {
-    cssRules.forEach(rule => {
+    cssRules.forEach((rule) => {
       rule.use[0] = MiniCssExtractPlugin.loader;
     });
   }
@@ -158,6 +158,12 @@ module.exports = function(env = { production: false } /* , argv */) {
     new webpack.DefinePlugin({
       // 'process.env.NODE_ENV': JSON.stringify(isDev ? 'development' : 'production'),
       __DEV__: isDev,
+
+      // 对文件中有 global process 和单独的 module (不是 module.exports)，webpack 会增加外部函数包裹注入 webpack/buildin/xxx
+      // global process 对应 NodeSourcePlugin
+      // module: undefined,
+      // global: undefined,
+      // process: undefined,
     }),
     // new HTMLWebpackPlugin({
     //   template: projectPath('src/document.ejs'),
@@ -180,12 +186,13 @@ module.exports = function(env = { production: false } /* , argv */) {
         analyzerPort: process.env.ANALYZE_PORT || 8888,
         openAnalyzer: true,
       }),
-      preserveModules && new PreserveModulesPlugin({
-      // generateChunkAssets: false,
-      nodeModulesName: 'npm',
-      // outputPath: 'test',
-      // fileExt: 'mjs',
-    }),
+    preserveModules &&
+      new PreserveModulesPlugin({
+        // generateChunkAssets: false,
+        nodeModulesName: 'npm',
+        // outputPath: 'test',
+        // fileExt: 'mjs',
+      }),
   ].filter(Boolean);
 
   const config = {
@@ -198,6 +205,7 @@ module.exports = function(env = { production: false } /* , argv */) {
       // 直接写在 entry 中的loader 是最后执行的
       // xxx: `${require.resolve('./entryLoader')}!${projectPath('src/xxx/index.ts')}`,
       // chunk: projectPath('src/trunk/index.ts'), // chunk 测试
+      // rax: projectPath('src/rax/index.js'),
     },
     output: {
       path: outputPath,
@@ -209,6 +217,16 @@ module.exports = function(env = { production: false } /* , argv */) {
       publicPath: '/',
       chunkFilename: `[name]${jsHash}.async.js`,
     },
+    // preserveModules 时必须关闭 NodeSourcePlugin 否则会使用函数包裹代码引入 process global 等
+    // 导致 import export 不在顶层
+    node: preserveModules
+      ? {
+          global: false,
+          process: false,
+          setImmediate: false,
+        }
+      : undefined,
+    amd: !preserveModules,
     // 'source-map'
     devtool: isDev && !process.env.BUILD_DEV ? 'cheap-module-source-map' : 'none',
     devServer: isDev
@@ -282,9 +300,9 @@ module.exports = function(env = { production: false } /* , argv */) {
     },
     optimization: {
       splitChunks: {
-        chunks: 'initial'
-      }
-    }
+        chunks: 'initial',
+      },
+    },
   };
 
   return config;
