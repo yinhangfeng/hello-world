@@ -82,23 +82,6 @@ fn capacity_to_buckets(cap: usize) -> Option<usize> {
 
 struct MyBox(i32);
 
-#[derive(Debug)]
-struct User {
-    username: String,
-    email: String,
-    sign_in_count: u64,
-    active: bool,
-}
-fn build_user(email: String, username: String) -> User {
-    // 初始化 顺序可以不同 同名变量简化
-    User {
-        email,
-        username,
-        active: true,
-        sign_in_count: 1,
-    }
-}
-
 fn test_hash_map() {
     let text = "hello world wonderful world";
 
@@ -153,33 +136,5 @@ impl<'a> ImportantExcerpt<'a> {
     fn announce_and_return_part(&self, announcement: &str) -> &str {
         println!("Attention please: {}", announcement);
         self.part
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn it_works() {
-        assert_eq!(2 + 2, 4);
-    }
-
-    #[test]
-    fn test_string() {
-        let s1 = String::from("123abc中文");
-        println!("s1: {} len: {}", s1, s1.len());
-    }
-
-    #[test]
-    fn test_struct() {
-        let user1 = build_user(String::from("xxx"), String::from("111"));
-        let user2 = User {
-            email: String::from("another@example.com"),
-            username: String::from("anotherusername567"),
-            ..user1
-        };
-
-        println!("user2 {:#?}", user2);
     }
 }

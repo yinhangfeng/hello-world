@@ -1,3 +1,5 @@
+https://doc.rust-lang.org/book/ch01-03-hello-cargo.html
+
 ## note
 
 ```rust
@@ -415,4 +417,28 @@ impl<T> Deref for MyBox<T> {
 // 当 T: DerefMut<Target=U> 时从 &mut T 到 &mut U。
 // 当 T: Deref<Target=U> 时从 &mut T 到 &U。
 
+```
+
+## 测试
+
+集成测试放在与 src 同级的 tests 目录中，rust 会自动寻找
+
+运行所有测试
+```
+cargo test
+```
+
+运行单个测试(#[test])标记的函数名
+```
+cargo test foo_test
+```
+
+运行单个文件里的所有测试
+```
+cargo test --test foo_file
+```
+
+运行测试时保留 println
+```
+cargo test -- --nocapture
 ```
