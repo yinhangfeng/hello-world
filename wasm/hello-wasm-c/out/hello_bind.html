@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <title>hello ebind</title>
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <meta name="format-detection" content="telephone=no" />
+  <meta name="format-detection" content="email=no" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
+  <style>
+    body {
+      margin: 0;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="root">
+
+  </div>
+
+  <script type="text/javascript" src="./hello_bind.js"></script>
+  <script type="text/javascript">
+    HelloBind({
+      // noInitialRun: true,
+    }).then((helloBind) => {
+      console.log('helloBind.lerp: ', helloBind.lerp(0, 10, 0.5));
+
+      var instance = new helloBind.MyClass(10, "hello");
+      instance.incrementX();
+      instance.x; // 11
+      instance.x = 20; // 20
+      console.log('x', instance.x);
+      console.log('getStringFromInstance', helloBind.MyClass.getStringFromInstance(instance)); // "hello"
+      instance.delete();
+    });
+  </script>
+</body>
+
+</html>
