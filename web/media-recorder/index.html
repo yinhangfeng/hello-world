@@ -20,11 +20,11 @@
       display: flex;
       flex-wrap: wrap;
       padding: 12px;
-      margin-bottom: 8px;
     }
 
     .btns button {
       margin-right: 12px;
+      margin-bottom: 12px;
     }
 
     #frame-rate {
@@ -48,11 +48,13 @@
     <button onclick="start()">start capture</button>
     <button onclick="stop()">stop capture</button>
     <button onclick="requestFrame()">requestFrame</button>
+    <button onclick="recordConstantFps()">record constant fps</button>
     <button onclick="startAnimation()">start animation</button>
     <button onclick="stopAnimation()">stop animation</button>
     <button onclick="playVideo()">play record video</button>
     <button onclick="download()">download video</button>
     <button onclick="displayMedia()">displayMedia</button>
+    <button onclick="getSupportedMimeTypes()">getSupportedMimeTypes</button>
   </div>
   <input id="frame-rate" type="text" placeholder="frameRate" />
 
@@ -68,18 +70,18 @@
     const canvasHeight = 720;
     let canvasStream;
     let mediaRecorder;
+    let recordTimer;
     let recordVideoBlob;
     let recordVideoChunks;
     let animationTimer;
     let animationStep = 0;
     let animationDirection = 1;
 
-    function start() {
+    function start(frameRate) {
       stop();
-      let frameRate = frameRateInput.value;
-      if (!frameRate) {
+      if (frameRate === '' || frameRate == null) {
         frameRate = undefined;
-      } else {
+      } else if (typeof frameRate === 'string') {
         frameRate = parseInt(frameRate, 10);
       }
       canvasStream = canvas.captureStream(frameRate);
@@ -88,7 +90,7 @@
 
       mediaRecorder = new MediaRecorder(canvasStream, {
         // https://stackoverflow.com/questions/41739837/all-mime-types-supported-by-mediarecorder-in-firefox-and-chrome
-        mimeType: 'video/webm;codecs=H264',
+        mimeType: 'video/webm;codecs:H264',
         videoBitsPerSecond: 10 * 1024 * 1024,
         // audioBitsPerSecond
       });
@@ -119,22 +121,29 @@
       mediaRecorder.stop();
       canvasStream = undefined;
       mediaRecorder = undefined;
+      clearTimeout(recordTimer);
       video.pause();
       video.srcObject = undefined;
     }
 
     function requestFrame() {
       if (canvasStream) {
-        canvasStream.getTracks()[0].requestFrame();
+        if (canvasStream.requestFrame) {
+          canvasStream.requestFrame();
+        } else {
+          canvasStream.getTracks()[0].requestFrame();
+        }
       }
     }
 
-    function drawFrame() {
+    function drawFrame(scheduleNext = true, dt = 1 / 60) {
       canvasContext.clearRect(0, 0, canvasWidth, canvasHeight);
       canvasContext.fillStyle = '#ddd';
       const size = 100 + animationStep * 400;
       canvasContext.fillRect(50, 50, size, size);
-      animationStep += animationDirection * (1 / 60) * 0.5;
+
+      const speed = 0.5;
+      animationStep += animationDirection * dt * speed;
       if (animationStep >= 1) {
         animationStep = 1;
         animationDirection = -animationDirection;
@@ -143,7 +152,45 @@
         animationDirection = -animationDirection;
       }
 
-      animationTimer = requestAnimationFrame(drawFrame);
+      if (scheduleNext) {
+        animationTimer = requestAnimationFrame(drawFrame);
+      }
+    }
+
+    function sleep(milliseconds) {
+      const start = Date.now();
+      while (Date.now() - start < milliseconds) {
+
+      }
+    }
+
+    // 以 30 fps 恒定速率录制
+    // 问题
+    // 1. setTimeout 时间可能不准(本身不准或者js线程卡顿)，MediaRecorder 没有一个 seekTime 的能力，导致必须以真实的时间推进
+    // 2. 为了防止 js 卡顿造成 setTimeout 不准，所以 setTimeout 期间不能进行绘制，导致录制总时间增加
+    function recordConstantFps() {
+      const fps = 30;
+      const frameDt = 1 / fps;
+      stopAnimation();
+      start(0);
+
+      mediaRecorder.pause();
+
+      function recordOneFrame() {
+        drawFrame(false, frameDt);
+        // 模拟 canvas 绘制卡顿
+        // sleep(Math.random() * 20);
+
+        mediaRecorder.resume();
+        const start = Date.now();
+        requestFrame();
+        recordTimer = setTimeout(() => {
+          mediaRecorder.pause();
+          recordOneFrame();
+        }, frameDt * 1000 - (Date.now() - start));
+      }
+
+      recordOneFrame();
     }
 
     function startAnimation() {
@@ -178,6 +225,49 @@
       const screenStream = await navigator.mediaDevices.getDisplayMedia();
       video.srcObject = screenStream;
       video.play();
+    }
+
+    function getSupportedMimeTypes() {
+      const VIDEO_TYPES = [
+        "webm",
+        "ogg",
+        "mp4",
+        "x-matroska"
+      ];
+      const VIDEO_CODECS = [
+        "vp9",
+        "vp9.0",
+        "vp8",
+        "vp8.0",
+        "avc1",
+        "av1",
+        "h265",
+        "h.265",
+        "h264",
+        "h.264",
+        "opus",
+      ];
+
+      const supportedTypes = [];
+      VIDEO_TYPES.forEach((videoType) => {
+        const type = `video/${videoType}`;
+        VIDEO_CODECS.forEach((codec) => {
+          const variations = [
+            `${type};codecs=${codec}`,
+            `${type};codecs:${codec}`,
+            `${type};codecs=${codec.toUpperCase()}`,
+            `${type};codecs:${codec.toUpperCase()}`,
+            `${type}`
+          ]
+          variations.forEach(variation => {
+            if (MediaRecorder.isTypeSupported(variation))
+              supportedTypes.push(variation);
+          })
+        });
+      });
+
+      console.log('supportedTypes', supportedTypes);
+      return supportedTypes;
     }
 
     startAnimation();
