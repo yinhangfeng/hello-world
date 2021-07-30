@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <title>MediaRecorder</title>
+  <style>
+    body {
+      margin: 0;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    .btns {
+      display: flex;
+      flex-wrap: wrap;
+      padding: 12px;
+      margin-bottom: 8px;
+    }
+
+    .btns button {
+      margin-right: 12px;
+    }
+
+    #frame-rate {
+      margin-bottom: 12px;
+    }
+
+    #canvas1 {
+      width: 100%;
+      border: 1px solid #ddd;
+    }
+
+    #video1 {
+      width: 100%;
+      border: 1px solid #ddd;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="btns">
+    <button onclick="start()">start capture</button>
+    <button onclick="stop()">stop capture</button>
+    <button onclick="requestFrame()">requestFrame</button>
+    <button onclick="startAnimation()">start animation</button>
+    <button onclick="stopAnimation()">stop animation</button>
+    <button onclick="playVideo()">play record video</button>
+    <button onclick="download()">download video</button>
+    <button onclick="displayMedia()">displayMedia</button>
+  </div>
+  <input id="frame-rate" type="text" placeholder="frameRate" />
+
+  <canvas id="canvas1" width="1280" height="720"></canvas>
+  <video id="video1"></video>
+  <script>
+
+    const canvas = document.querySelector('#canvas1');
+    const video = document.querySelector('#video1');
+    const frameRateInput = document.querySelector('#frame-rate');
+    const canvasContext = canvas.getContext('2d');
+    const canvasWidth = 1280;
+    const canvasHeight = 720;
+    let canvasStream;
+    let mediaRecorder;
+    let recordVideoBlob;
+    let recordVideoChunks;
+    let animationTimer;
+    let animationStep = 0;
+    let animationDirection = 1;
+
+    function start() {
+      stop();
+      let frameRate = frameRateInput.value;
+      if (!frameRate) {
+        frameRate = undefined;
+      } else {
+        frameRate = parseInt(frameRate, 10);
+      }
+      canvasStream = canvas.captureStream(frameRate);
+      video.srcObject = canvasStream;
+      video.play();
+
+      mediaRecorder = new MediaRecorder(canvasStream, {
+        // https://stackoverflow.com/questions/41739837/all-mime-types-supported-by-mediarecorder-in-firefox-and-chrome
+        mimeType: 'video/webm;codecs=H264',
+        videoBitsPerSecond: 10 * 1024 * 1024,
+        // audioBitsPerSecond
+      });
+      mediaRecorder.onstop = (e) => {
+        console.log('MediaRecorder onstop', e);
+
+        recordVideoBlob = new Blob(recordVideoChunks, { 'type': 'video/webm' });
+        recordVideoChunks = undefined;
+      };
+      mediaRecorder.ondataavailable = (e) => {
+        console.log('MediaRecorder ondataavailable', e);
+
+        if (!recordVideoChunks) {
+          recordVideoChunks = [];
+        }
+
+        recordVideoChunks.push(e.data);
+      };
+
+      mediaRecorder.start();
+    }
+
+    function stop() {
+      if (!canvasStream) {
+        return;
+      }
+
+      mediaRecorder.stop();
+      canvasStream = undefined;
+      mediaRecorder = undefined;
+      video.pause();
+      video.srcObject = undefined;
+    }
+
+    function requestFrame() {
+      if (canvasStream) {
+        canvasStream.getTracks()[0].requestFrame();
+      }
+    }
+
+    function drawFrame() {
+      canvasContext.clearRect(0, 0, canvasWidth, canvasHeight);
+      canvasContext.fillStyle = '#ddd';
+      const size = 100 + animationStep * 400;
+      canvasContext.fillRect(50, 50, size, size);
+      animationStep += animationDirection * (1 / 60) * 0.5;
+      if (animationStep >= 1) {
+        animationStep = 1;
+        animationDirection = -animationDirection;
+      } else if (animationStep <= 0) {
+        animationStep = 0;
+        animationDirection = -animationDirection;
+      }
+
+      animationTimer = requestAnimationFrame(drawFrame);
+    }
+
+    function startAnimation() {
+      animationTimer = requestAnimationFrame(drawFrame);
+    }
+
+    function stopAnimation() {
+      cancelAnimationFrame(animationTimer);
+    }
+
+    function playVideo() {
+      if (recordVideoBlob && !mediaRecorder) {
+        video.src = URL.createObjectURL(recordVideoBlob);
+        video.play();
+      }
+    }
+
+    function download() {
+      if (!recordVideoBlob) {
+        return;
+      }
+      const blobUrl = URL.createObjectURL(recordVideoBlob);
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.download = 'canvas-record.webm';
+      link.click();
+      URL.revokeObjectURL(blobUrl);
+    }
+
+    async function displayMedia() {
+      stop();
+      const screenStream = await navigator.mediaDevices.getDisplayMedia();
+      video.srcObject = screenStream;
+      video.play();
+    }
+
+    startAnimation();
+
+  </script>
+</body>
+
+</html>
