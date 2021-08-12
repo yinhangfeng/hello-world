@@ -49,6 +49,8 @@ https://emscripten.org/docs/api_reference/Filesystem-API.html#filesystem-api
 hello_file.cc 已包括在 cmake 工程
 hello_cmake.html
 
+构建时打包文件 https://emscripten.org/docs/porting/files/packaging_files.html
+
 ## Debug
 https://emscripten.org/docs/porting/Debugging.html#debug-information
 emcc 命令中加上 -gsource-map 会生成 sourcemap，可在浏览器调试
@@ -56,6 +58,10 @@ cmake 工程中可以设置在 CMAKE_CXX_FLAGS 上
 
 使用 EMCC_DEBUG=1 环境变量可以在 emsdk 编译时输出更多信息
 
+## 多线程
+https://emscripten.org/docs/porting/pthreads.html
+需要给 emcc 添加 -pthread 参数，网站需要开启 COOP COEP (配置在 serve.json 中)
+https://web.dev/coop-coep/
 
 ## 参考
 

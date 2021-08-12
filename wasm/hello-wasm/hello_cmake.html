@@ -38,6 +38,7 @@
   <div class="btns">
     <button onclick="test_file1()">test_file1</button>
     <button onclick="testFS()">testFS</button>
+    <button onclick="test_thread1()">test_thread1</button>
   </div>
 
   <script type="text/javascript" src="./out/hello_cmake.js"></script>
@@ -52,7 +53,7 @@
       console.log('mod.lerp: ', mod.lerp(0, 10, 0.5));
     });
 
-    function test_file1() {
+    function testFile1() {
       helloModule.test_file1();
     }
 
@@ -62,6 +63,10 @@
       FS.mkdir('/test');
       FS.writeFile('/test/test.txt', 'foobar');
       console.log('readFile', FS.readFile('/test.txt', { encoding: 'utf8' }));
+    }
+
+    function test_thread1() {
+      helloModule.test_thread1();
     }
   </script>
 </body>
