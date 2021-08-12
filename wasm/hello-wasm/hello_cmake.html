@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <title>hello_module</title>
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <meta name="format-detection" content="telephone=no" />
+  <meta name="format-detection" content="email=no" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .btns {
+      display: flex;
+      flex-wrap: wrap;
+      padding: 12px;
+    }
+
+    .btns button {
+      margin-right: 12px;
+      margin-bottom: 12px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="btns">
+    <button onclick="test_file1()">test_file1</button>
+    <button onclick="testFS()">testFS</button>
+  </div>
+
+  <script type="text/javascript" src="./out/hello_cmake.js"></script>
+  <script type="text/javascript">
+    let helloModule;
+    HelloCmake({
+      noInitialRun: true,
+    }).then((mod) => {
+      helloModule = mod;
+      mod._main();
+
+      console.log('mod.lerp: ', mod.lerp(0, 10, 0.5));
+    });
+
+    function test_file1() {
+      helloModule.test_file1();
+    }
+
+    function testFS() {
+      // https://emscripten.org/docs/api_reference/Filesystem-API.html#filesystem-api
+      const FS = helloModule.FS;
+      FS.mkdir('/test');
+      FS.writeFile('/test/test.txt', 'foobar');
+      console.log('readFile', FS.readFile('/test.txt', { encoding: 'utf8' }));
+    }
+  </script>
+</body>
+
+</html>

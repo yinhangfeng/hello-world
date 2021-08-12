@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="utf-8" />
-  <title>hello3</title>
+  <title>hello_module</title>
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   <meta name="format-detection" content="telephone=no" />
@@ -25,12 +25,17 @@
 
   </div>
 
-  <script type="text/javascript" src="./hello3.js"></script>
+  <script type="text/javascript" src="./out/hello_module.js"></script>
   <script type="text/javascript">
-    Hello3({
+    // 模块名 HelloModule 本身是一个加载函数
+    // https://emscripten.org/docs/api_reference/module.html
+    HelloModule({
+      // 不自动执行 main 函数
       noInitialRun: true,
-    }).then((hello3) => {
-      console.log('hello3._myFunction: ', hello3._myFunction());
+    }).then((mod) => {
+      // main 只是一个普通函数 可以单独运行
+      // mod._main()
+      console.log('mod._myFunction: ', mod._myFunction());
     });
   </script>
 </body>

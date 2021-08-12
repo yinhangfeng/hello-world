@@ -9,6 +9,8 @@ int main() {
 
 float lerp(float a, float b, float t)
 {
+    // embind 内的 printf 没法输出?
+    printf("lerp(%f, %f, %f)", a, b, t);
     return (1 - t) * a + t * b;
 }
 

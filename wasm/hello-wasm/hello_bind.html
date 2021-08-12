@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="utf-8" />
-  <title>hello ebind</title>
+  <title>hello embind</title>
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   <meta name="format-detection" content="telephone=no" />
@@ -25,11 +25,12 @@
 
   </div>
 
-  <script type="text/javascript" src="./hello_bind.js"></script>
+  <script type="text/javascript" src="./out/hello_bind.js"></script>
   <script type="text/javascript">
     HelloBind({
-      // noInitialRun: true,
+      noInitialRun: true,
     }).then((helloBind) => {
+      helloBind._main();
       console.log('helloBind.lerp: ', helloBind.lerp(0, 10, 0.5));
 
       var instance = new helloBind.MyClass(10, "hello");
