@@ -7,17 +7,17 @@ project(HELLO_CMAKE
 
 set(CMAKE_CXX_STANDARD 11)
 
-find_package(Threads REQUIRED)
+# find_package(Threads REQUIRED)
 
 add_executable(hello_cmake hello_cmake.cc hello_file.cc hello_thread.cc)
 
-target_link_libraries(hello_cmake PRIVATE Threads::Threads my_lib)
+target_link_libraries(hello_cmake PRIVATE my_lib)
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Emscripten")
   message("Emscripten env: ${CMAKE_SYSTEM_NAME}")
   # https://emscripten.org/docs/getting_started/FAQ.html?highlight=cmake#how-do-i-specify-s-options-in-a-cmake-project
-  # MODULARIZE: 打包 umd; EXPORT_NAME: 导出模块名字 EXPORTED_RUNTIME_METHODS: 需要导出的模块
-  # --bind: 使用 embind; -O0: ; -g0: 
+  # MODULARIZE: 打包 umd; EXPORT_NAME: 导出模块名字 EXPORTED_RUNTIME_METHODS: 需要导出的模块; PTHREAD_POOL_SIZE=navigator.hardwareConcurrency 指定初始线程池为机器的核心数
+  # --bind: 使用 embind;
   target_link_options(hello_cmake PRIVATE -sMODULARIZE=1 -sEXPORT_NAME=HelloCmake -sEXPORTED_RUNTIME_METHODS=[FS,cwrap,ccall] -sPTHREAD_POOL_SIZE=navigator.hardwareConcurrency --bind)
   # -gsource-map 不能放在 target_link_options 中
   # https://emscripten.org/docs/porting/Debugging.html#debug-information
