@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <title>hello_async</title>
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <meta name="format-detection" content="telephone=no" />
+  <meta name="format-detection" content="email=no" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
+  <style>
+    body {
+      margin: 0;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    .btns {
+      display: flex;
+      flex-wrap: wrap;
+      padding: 12px;
+    }
+
+    .btns button {
+      margin-right: 12px;
+      margin-bottom: 12px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="btns">
+    <button onclick="test_async()">test_async</button>
+    <button onclick="test_async_ccall()">test_async_ccall</button>
+    <button onclick="test_callback()">test_callback</button>
+  </div>
+
+  <script type="text/javascript" src="./out/hello_async.js"></script>
+  <script type="text/javascript">
+    let mod;
+    HelloAsync({
+      noInitialRun: true,
+    }).then((module) => {
+      mod = module;
+    });
+
+    function test_async() {
+      console.log('_test_async');
+      mod._test_async();
+      console.log('after _test_async');
+    }
+
+    function test_async_ccall() {
+      console.log('ccall test_async');
+      mod.ccall("test_async", "number", [], [], { async: true }).then(result => {
+        console.log('ccall test_async complete', result);
+      });
+    }
+
+    function test_callback() {
+      console.log('test_async_callback');
+      const callback = mod.addFunction((result) => {
+        console.log('test_async_callback result', result);
+      }, 'vi');
+      mod._test_async_callback(111, callback);
+      console.log('after test_async_callback');
+    }
+  </script>
+</body>
+
+</html>

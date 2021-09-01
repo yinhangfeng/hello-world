@@ -51,17 +51,32 @@ hello_cmake.html
 
 构建时打包文件 https://emscripten.org/docs/porting/files/packaging_files.html
 
-## Debug
-https://emscripten.org/docs/porting/Debugging.html#debug-information
-emcc 命令中加上 -gsource-map 会生成 sourcemap，可在浏览器调试
-cmake 工程中可以设置在 CMAKE_CXX_FLAGS 上
+#### Packaging Files
+https://emscripten.org/docs/porting/files/packaging_files.html
 
-使用 EMCC_DEBUG=1 环境变量可以在 emsdk 编译时输出更多信息
+```
+emcc hello_file.cc --bind -s MODULARIZE=1 -s EXPORT_NAME=HelloFile -o out/hello_file.js --embed-file assets
+emcc hello_file.cc --bind -s MODULARIZE=1 -s EXPORT_NAME=HelloFile -o out/hello_file.js --preload-file assets
+```
 
 ## 多线程
 https://emscripten.org/docs/porting/pthreads.html
 需要给 emcc 添加 -pthread 参数，网站需要开启 COOP COEP (配置在 serve.json 中)
 https://web.dev/coop-coep/
+https://developer.chrome.com/blog/enabling-shared-array-buffer/
+
+## 异步
+```
+emcc hello_async.cc -s MODULARIZE=1 -s EXPORT_NAME=HelloAsync -s EXPORTED_RUNTIME_METHODS="[ccall,cwrap,addFunction]" -s ASYNCIFY -s ALLOW_TABLE_GROWTH -sPTHREAD_POOL_SIZE=2 -pthread -gsource-map -o out/hello_async.js
+```
+
+## Debug
+https://emscripten.org/docs/porting/Debugging.html#debug-information
+https://developer.chrome.com/blog/wasm-debugging-2020/
+emcc 命令中加上 -gsource-map 会生成 sourcemap，可在浏览器调试
+cmake 工程中可以设置在 CMAKE_CXX_FLAGS 上
+
+使用 EMCC_DEBUG=1 环境变量可以在 emsdk 编译时输出更多信息
 
 ## 参考
 

@@ -28,10 +28,11 @@
   <script type="text/javascript" src="./out/hello_module.js"></script>
   <script type="text/javascript">
     // 模块名 HelloModule 本身是一个加载函数
-    // https://emscripten.org/docs/api_reference/module.html
     HelloModule({
-      // 不自动执行 main 函数
+      // 不自动执行 main 函数 也可以在编译时加 -s INVOKE_RUN=0 参数
       noInitialRun: true,
+      // locateFile: (path, prefix) => { ... } // 获取 wasm 等其它文件路劲，默认会从 .js 文件同目录加载
+      // 其它参数 https://emscripten.org/docs/api_reference/module.html
     }).then((mod) => {
       // main 只是一个普通函数 可以单独运行
       // mod._main()
