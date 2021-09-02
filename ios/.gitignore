@@ -1,0 +1,6 @@
+**/DerivedData/
+**/Pods/
+**/.symlinks/
+profile
+xcuserdata
+**/.generated/

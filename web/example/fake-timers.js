@@ -29,6 +29,10 @@ async function run() {
   }
 
   console.log('start Date.now():', start, 'clock.Date.now():', clock.Date.now());
+  timeout();
+  tick();
+  timeout();
+  tick();
 
   timeout();
   timeout(1);
