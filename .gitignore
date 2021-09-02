@@ -3,6 +3,10 @@ node_modules
 build
 
 .idea
+*.iml
+*.ipr
+*.iws
+
 .gradle
 .vscode
 local.properties
