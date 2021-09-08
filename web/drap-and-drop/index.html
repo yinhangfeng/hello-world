@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <title>test</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .btns {
+      display: flex;
+      flex-wrap: wrap;
+      padding: 12px;
+    }
+
+    .btns button {
+      margin-right: 12px;
+      margin-bottom: 12px;
+    }
+
+    .dropzone {
+      min-height: 300px;
+      margin: 30px;
+      border: 1px solid #ddd;
+    }
+
+    .draggable {
+      padding: 20px;
+      min-width: 100px;
+      border: 1px solid #666;
+      margin: 10px;
+      background-color: #fff;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="btns">
+    <button onclick="test1()">test1</button>
+    <button onclick="test2()">test2</button>
+  </div>
+
+  <input type="text" style="height: 40px; border: 1px solid #ddd;" />
+
+  <div id="dropzone1" class="dropzone">
+    <div id="draggable1" class="draggable" draggable="true">
+      draggable1
+    </div>
+    <div id="draggable2" class="draggable" draggable="true">
+      draggable2
+    </div>
+    <div id="draggable3" class="draggable" draggable="true">
+      draggable3
+    </div>
+    <div id="draggable4" class="draggable" draggable="true">
+      draggable4
+    </div>
+  </div>
+  <div id="dropzone2" class="dropzone">
+
+  </div>
+  <div id="dropzone3" class="dropzone" dropzone="copy">
+
+  </div>
+  <script>
+    // https://developer.mozilla.org/zh-CN/docs/Web/API/HTML_Drag_and_Drop_API
+
+    function test1() {
+
+    }
+
+    function test2() {
+
+    }
+
+    let lastLogEventEle;
+    let lastLogEventMessage;
+    function logEvent(message, ele, e) {
+      if (message === lastLogEventMessage && ele === lastLogEventEle) {
+        console.log(message, ele.id);
+      } else {
+        console.log(message, ele.id, e);
+      }
+      lastLogEventEle = ele;
+      lastLogEventMessage = message;
+    }
+
+    function bindDropZone(ele, {
+      onDragenter,
+      onDragleave,
+      onDragover,
+      onDrop,
+    } = {}) {
+      // ele.addEventListener('drag', (e) => {
+      //   e.stopPropagation();
+      //   logEvent('drag', ele, e);
+      // });
+      // ele.addEventListener('dragstart', (e) => {
+      //   e.stopPropagation();
+      //   logEvent('dragstart', ele, e);
+      // });
+      // ele.addEventListener('dragend', (e) => {
+      //   e.stopPropagation();
+      //   logEvent('dragend', ele, e);
+      // });
+      ele.addEventListener('dragenter', (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        logEvent('dragenter', ele, e);
+
+        onDragenter && onDragenter(e, ele);
+      });
+      ele.addEventListener('dragleave', (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        logEvent('dragleave', ele, e);
+
+        onDragleave && onDragleave(e, ele);
+      });
+      ele.addEventListener('dragexit', (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        logEvent('dragexit', ele, e);
+      });
+      ele.addEventListener('dragover', (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        logEvent('dragover', ele, e);
+
+        onDragover && onDragover(e, ele);
+      });
+      ele.addEventListener('drop', (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        logEvent('drop', ele, e);
+
+        onDrop && onDrop(e, ele);
+      });
+    }
+
+    function bindDraggable(ele, {
+      onDragstart,
+    } = {}) {
+      ele.addEventListener('dragstart', (e) => {
+        e.stopPropagation();
+        logEvent('dragstart', ele, e);
+
+        // e.dataTransfer.setData("text/plain", e.target.innerText);
+        e.dataTransfer.setData("text/plain", e.target.id);
+        e.dataTransfer.setData("text/html", e.target.outerHTML);
+        e.dataTransfer.setData("text/uri-list", `${e.target.ownerDocument.location.href}#${ele.id}`);
+
+        // const img = new Image();
+        // img.src = 'https://flutter.dev/assets/images/shared/brand/flutter/logo/flutter-lockup.png';
+        // e.dataTransfer.setDragImage(img, 10, 10);
+
+        // e.dataTransfer.dropEffect = "copy";
+
+        onDragstart && onDragstart(e, ele);
+      });
+      ele.addEventListener('drag', (e) => {
+        e.stopPropagation();
+        // logEvent('drag', ele, e);
+      });
+      ele.addEventListener('dragend', (e) => {
+        e.stopPropagation();
+        logEvent('dragend', ele, e);
+      });
+      // ele.addEventListener('dragenter', (e) => {
+      //   e.stopPropagation();
+      //   logEvent('dragenter', ele, e);
+      // });
+      // ele.addEventListener('dragleave', (e) => {
+      //   e.stopPropagation();
+      //   logEvent('dragleave', ele, e);
+      // });
+      // ele.addEventListener('dragexit', (e) => {
+      //   e.stopPropagation();
+      //   logEvent('dragexit', ele, e);
+      // });
+      // ele.addEventListener('dragover', (e) => {
+      //   e.stopPropagation();
+      //   // logEvent('dragover', ele, e);
+      // });
+      // ele.addEventListener('drop', (e) => {
+      //   e.stopPropagation();
+      //   logEvent('drop', ele, e);
+      // });
+    }
+
+    bindDropZone(document.querySelector('#dropzone1'), {
+      onDragover: (e, ele) => {
+        e.dataTransfer.dropEffect = "move";
+      },
+      onDrop: (e, ele) => {
+        e.dataTransfer.dropEffect = "move";
+        const id = e.dataTransfer.getData("text/plain");
+        ele.appendChild(document.getElementById(id));
+      },
+    });
+    bindDropZone(document.querySelector('#dropzone2'), {
+      onDragover: (e, ele) => {
+        e.dataTransfer.dropEffect = "move";
+      },
+      onDrop: (e, ele) => {
+        e.dataTransfer.dropEffect = "move";
+        const id = e.dataTransfer.getData("text/plain");
+        ele.appendChild(document.getElementById(id));
+      },
+    });
+    bindDropZone(document.querySelector('#dropzone3'), {
+      onDragover: (e, ele) => {
+        e.dataTransfer.dropEffect = "move";
+      },
+      onDrop: (e, ele) => {
+        e.dataTransfer.dropEffect = "move";
+        const id = e.dataTransfer.getData("text/plain");
+        ele.appendChild(document.getElementById(id));
+      },
+    });
+
+    bindDraggable(document.querySelector('#draggable1'), {
+      onDragstart: (e, ele) => {
+        e.dataTransfer.dropEffect = "move";
+        // ele.style.visibility = 'hidden';
+
+        ele.style.transform = 'translateX(300px)';
+      },
+    });
+    bindDraggable(document.querySelector('#draggable2'));
+    bindDraggable(document.querySelector('#draggable3'));
+    bindDraggable(document.querySelector('#draggable4'));
+  </script>
+</body>
+
+</html>

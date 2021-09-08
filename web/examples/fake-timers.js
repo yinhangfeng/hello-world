@@ -24,8 +24,8 @@ async function run() {
     setTimeout(() => {
       console.log('tickAsync setTimeout:', time);
     });
-    await clock.tickAsync(time);
-    console.log('tickAsync after:', time);
+    const res = await clock.tickAsync(time);
+    console.log('tickAsync after:', time, res);
   }
 
   console.log('start Date.now():', start, 'clock.Date.now():', clock.Date.now());
@@ -43,7 +43,11 @@ async function run() {
 
   interval(100);
   // interval();
-
+  tick(0.1);
+  tick(0.4);
+  tick(0.5);
+  tick(0.6);
+  tick(0.4);
   tick(1);
   tick(100);
 
