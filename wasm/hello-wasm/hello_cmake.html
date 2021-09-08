@@ -9,6 +9,8 @@
   <meta name="format-detection" content="telephone=no" />
   <meta name="format-detection" content="email=no" />
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
+  <meta http-equiv="origin-trial"
+    content="AujdLBEkmb+zjXwvaiqn5C+PAAV7wXAS1KhKp3snz4Sz4k5/PfBNM0eSiSAmO7Odf3TXPkv+vsCsplhNcnIgbgAAAAB/eyJvcmlnaW4iOiJodHRwczovL2xvY2FsLTUwMDAtcmV4bWVkaWEucmVuZGVyLmZyZXNoaGVtYS5jb206NDQzIiwiZmVhdHVyZSI6IlVucmVzdHJpY3RlZFNoYXJlZEFycmF5QnVmZmVyIiwiZXhwaXJ5IjoxNjM5NTI2Mzk5fQ==">
   <style>
     * {
       box-sizing: border-box;
@@ -38,15 +40,39 @@
   <div class="btns">
     <button onclick="test_file1()">test_file1</button>
     <button onclick="testFS()">testFS</button>
+    <button onclick="test_file_stdin1()">test_file_stdin1</button>
     <button onclick="test_thread1()">test_thread1</button>
+    <button onclick="test1()">test1</button>
+    <button onclick="test2()">test2</button>
   </div>
 
-  <script type="text/javascript" src="./out/hello_cmake.js"></script>
+  <script type="text/javascript" src="out/hello_cmake.js"></script>
   <script type="text/javascript">
     let helloModule;
     HelloCmake({
       noInitialRun: true,
+      preRun: (mod) => {
+        console.log('preRun');
+
+        const stdinStr = 'hello stdin';
+        let stdinIndex = 0;
+        // https://emscripten.org/docs/api_reference/Filesystem-API.html?highlight=stdin#FS.init
+        mod.FS.init(() => {
+          console.log('stdin');
+          // 如果不配置 stdin 默认会使用 stream.tty.ops.get_char 弹出 prompt
+          if (stdinIndex < stdinStr.length) {
+            return stdinStr.charCodeAt(stdinIndex++);
+          } return null;
+        }
+          // , (code) => {
+          //   console.log('stdout', code);
+          // }, (code) => {
+          //   console.log('stderr', code);
+          // }
+        );
+      },
     }).then((mod) => {
+
       helloModule = mod;
       mod._main();
 
@@ -55,6 +81,10 @@
 
     function test_file1() {
       helloModule.test_file1();
+    }
+
+    function test_file_stdin1() {
+      helloModule._test_file_stdin1();
     }
 
     function testFS() {
@@ -67,6 +97,14 @@
 
     function test_thread1() {
       helloModule.test_thread1();
+    }
+
+    function test1() {
+      helloModule._my_func1(1, 0);
+    }
+
+    function test2() {
+      helloModule._my_lib_func2(1, 0);
     }
   </script>
 </body>

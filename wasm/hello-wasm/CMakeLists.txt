@@ -7,9 +7,17 @@ project(HELLO_CMAKE
 
 set(CMAKE_CXX_STANDARD 11)
 
+# set(CMAKE_C_STANDARD 11)
+# set(CMAKE_C_STANDARD_REQUIRED ON)
+# set(CMAKE_C_EXTENSIONS ON)
+
+# set(CMAKE_CXX_STANDARD 14)
+# set(CMAKE_CXX_STANDARD_REQUIRED ON)
+# set(CMAKE_CXX_EXTENSIONS OFF)
+
 # find_package(Threads REQUIRED)
 
-add_executable(hello_cmake hello_cmake.cc hello_file.cc hello_thread.cc)
+add_executable(hello_cmake hello_cmake.cc hello_file.cc hello_thread.cc hello_c.c)
 
 target_link_libraries(hello_cmake PRIVATE my_lib)
 
@@ -18,10 +26,18 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Emscripten")
   # https://emscripten.org/docs/getting_started/FAQ.html?highlight=cmake#how-do-i-specify-s-options-in-a-cmake-project
   # MODULARIZE: 打包 umd; EXPORT_NAME: 导出模块名字 EXPORTED_RUNTIME_METHODS: 需要导出的模块; PTHREAD_POOL_SIZE=navigator.hardwareConcurrency 指定初始线程池为机器的核心数
   # --bind: 使用 embind;
-  target_link_options(hello_cmake PRIVATE -sMODULARIZE=1 -sEXPORT_NAME=HelloCmake -sEXPORTED_RUNTIME_METHODS=[FS,cwrap,ccall] -sPTHREAD_POOL_SIZE=navigator.hardwareConcurrency --bind)
+  target_link_options(hello_cmake PRIVATE
+    -sMODULARIZE=1
+    -sEXPORT_NAME=HelloCmake
+    -sEXPORTED_RUNTIME_METHODS=[FS,cwrap,ccall]
+    -sPTHREAD_POOL_SIZE=navigator.hardwareConcurrency
+    --bind
+  )
   # -gsource-map 不能放在 target_link_options 中
   # https://emscripten.org/docs/porting/Debugging.html#debug-information
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -gsource-map -pthread")
+  set(EMSCRIPTEN_CFLAGS "-pthread -gsource-map")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${EMSCRIPTEN_CFLAGS}")
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${EMSCRIPTEN_CFLAGS}")
 endif()
 
 add_subdirectory(my_lib)
