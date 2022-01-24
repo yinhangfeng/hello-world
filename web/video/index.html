@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <title>test</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .btns {
+      display: flex;
+      flex-wrap: wrap;
+      padding: 12px;
+    }
+
+    .btns button {
+      margin-right: 12px;
+      margin-bottom: 12px;
+    }
+
+    .video1 {}
+  </style>
+</head>
+
+<body>
+  <div class="btns">
+    <button onclick="test1()">video info</button>
+    <button onclick="test2()">random current time</button>
+    <button onclick="test3()">random current time draw</button>
+  </div>
+  <video class="video1" src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" controls></video>
+  <canvas id="canvas1" width="400" height="400"></canvas>
+  <script>
+    // https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement
+    // https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/video
+    const video1 = document.querySelector('.video1');
+    function test1() {
+      videoInfo(video1);
+    }
+
+    function test2() {
+      const video = video1;
+      const time = Math.random() * video.duration || 10;
+      console.log('currentTime:', video.currentTime, 'newCurrentTime:', time);
+      video.currentTime = time;
+
+      videoInfo(video);
+
+      return time;
+    }
+
+    function test3() {
+      const targetTime = test2();
+
+      const video = video1;
+      const canvasWidth = 400;
+      const canvasHeight = 400;
+      const canvas = document.querySelector('#canvas1');
+      const ctx = canvas.getContext("2d");
+
+      const onFrameReady = (ev) => {
+        ctx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight, 0, 0, canvasWidth, canvasHeight * video.videoHeight / video.videoWidth);
+
+        // 需要 crossorigin
+        const imageData = ctx.getImageData(0, 0, canvasWidth, canvasHeight);
+        console.log('imageData', imageData);
+      };
+      // 等待 currentTime 修改成功 seeked
+      video.addEventListener('timeupdate', onFrameReady);
+    }
+
+    function videoInit(video) {
+      // video 没有 load 事件
+      // video.onload = (ev) => {
+      //   console.log('video onload', ev);
+      //   videoInfo(video);
+      // };
+      // video.addEventListener('load', (ev) => {
+      //   console.log('video load', ev);
+      //   videoInfo(video);
+      // });
+
+      video.addEventListener('canplay', (ev) => {
+        console.log('video canplay', ev);
+        videoInfo(video);
+      });
+
+      video.addEventListener('canplaythrough', (ev) => {
+        console.log('video canplaythrough', ev);
+        videoInfo(video);
+      });
+
+      video.addEventListener('complete', (ev) => {
+        console.log('video complete', ev);
+        videoInfo(video);
+      });
+
+      video.addEventListener('ended', (ev) => {
+        console.log('video ended', ev);
+        videoInfo(video);
+      });
+
+      video.addEventListener('loadeddata', (ev) => {
+        console.log('video loadeddata', ev);
+        videoInfo(video);
+      });
+
+      video.addEventListener('loadedmetadata', (ev) => {
+        console.log('video loadedmetadata', ev);
+        videoInfo(video);
+      });
+
+      video.addEventListener('timeupdate', (ev) => {
+        console.log('video timeupdate', ev);
+        videoInfo(video);
+      });
+
+      video.addEventListener('durationchange', (ev) => {
+        console.log('video durationchange', ev);
+        videoInfo(video);
+      });
+
+      video.addEventListener('play', (ev) => {
+        console.log('video play', ev);
+        videoInfo(video);
+      });
+
+      video.addEventListener('pause', (ev) => {
+        console.log('video pause', ev);
+        videoInfo(video);
+      });
+
+      video.addEventListener('seeked', (ev) => {
+        console.log('video seeked', ev);
+        videoInfo(video);
+      });
+    }
+
+    function videoInfo(video) {
+      console.log(video, 'duration:', video.duration, 'currentTime:', video.currentTime, 'played:', video.played, 'videoWidth:', video.videoWidth, 'videoHeight:', video.videoHeight,
+        'paused:', video.paused, 'ended:', video.ended, 'seekable:', video.seekable,
+      );
+    }
+
+    videoInfo(video1);
+    videoInit(video1);
+  </script>
+</body>
+
+</html>

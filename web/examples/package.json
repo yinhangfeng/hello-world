@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@sinonjs/fake-timers": "^7.1.2"
+    "@sinonjs/fake-timers": "^7.1.2",
+    "immer": "^9.0.6"
   }
 }

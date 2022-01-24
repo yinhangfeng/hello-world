@@ -88,7 +88,7 @@
       if (message === lastLogEventMessage && ele === lastLogEventEle) {
         console.log(message, ele.id);
       } else {
-        console.log(message, ele.id, e);
+        console.log(message, ele.id, e, e.dataTransfer.types);
       }
       lastLogEventEle = ele;
       lastLogEventMessage = message;
@@ -116,6 +116,9 @@
         e.stopPropagation();
         e.preventDefault();
         logEvent('dragenter', ele, e);
+
+        // 只有在 drop 时能拿到数据，这里只能获取 key e.dataTransfer.types
+        // e.dataTransfer.getData('Custom Data{}')
 
         onDragenter && onDragenter(e, ele);
       });
@@ -151,28 +154,24 @@
       onDragstart,
     } = {}) {
       ele.addEventListener('dragstart', (e) => {
-        e.stopPropagation();
+        // e.stopPropagation();
         logEvent('dragstart', ele, e);
 
+        // https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API/Recommended_drag_types
         // e.dataTransfer.setData("text/plain", e.target.innerText);
         e.dataTransfer.setData("text/plain", e.target.id);
         e.dataTransfer.setData("text/html", e.target.outerHTML);
         e.dataTransfer.setData("text/uri-list", `${e.target.ownerDocument.location.href}#${ele.id}`);
-
-        // const img = new Image();
-        // img.src = 'https://flutter.dev/assets/images/shared/brand/flutter/logo/flutter-lockup.png';
-        // e.dataTransfer.setDragImage(img, 10, 10);
-
-        // e.dataTransfer.dropEffect = "copy";
+        e.dataTransfer.setData(JSON.stringify({ a: 1, B: '测试' }), 'Custom Data');
 
         onDragstart && onDragstart(e, ele);
       });
       ele.addEventListener('drag', (e) => {
-        e.stopPropagation();
+        // e.stopPropagation();
         // logEvent('drag', ele, e);
       });
       ele.addEventListener('dragend', (e) => {
-        e.stopPropagation();
+        // e.stopPropagation();
         logEvent('dragend', ele, e);
       });
       // ele.addEventListener('dragenter', (e) => {
@@ -218,13 +217,20 @@
       },
     });
     bindDropZone(document.querySelector('#dropzone3'), {
+      onDragenter: (e, ele) => {
+        e.dataTransfer.dropEffect = "copy";
+      },
+      onDragleave: (e, ele) => {
+        // e.dataTransfer.dropEffect = "copy";
+        // e.dataTransfer.setDragImage(document.getElementById(e.dataTransfer.getData("text/plain")), 0, 0);
+      },
       onDragover: (e, ele) => {
-        e.dataTransfer.dropEffect = "move";
+        // e.dataTransfer.dropEffect = "copy";
       },
       onDrop: (e, ele) => {
-        e.dataTransfer.dropEffect = "move";
-        const id = e.dataTransfer.getData("text/plain");
-        ele.appendChild(document.getElementById(id));
+        e.dataTransfer.dropEffect = "copy";
+        // const id = e.dataTransfer.getData("text/plain");
+        // ele.appendChild(document.getElementById(id));
       },
     });
 
@@ -233,10 +239,19 @@
         e.dataTransfer.dropEffect = "move";
         // ele.style.visibility = 'hidden';
 
-        ele.style.transform = 'translateX(300px)';
+        ele.style.transform = 'translateX(50px)';
       },
     });
-    bindDraggable(document.querySelector('#draggable2'));
+    bindDraggable(document.querySelector('#draggable2'), {
+      onDragstart: (e, ele) => {
+        e.dataTransfer.dropEffect = "copy";
+        // ele.style.visibility = 'hidden';
+
+        const img = new Image();
+        img.src = 'https://flutter.dev/assets/images/shared/brand/flutter/logo/flutter-lockup.png';
+        e.dataTransfer.setDragImage(img, 0, 0);
+      },
+    });
     bindDraggable(document.querySelector('#draggable3'));
     bindDraggable(document.querySelector('#draggable4'));
   </script>

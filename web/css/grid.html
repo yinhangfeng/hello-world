@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <title>test</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .btns {
+      display: flex;
+      flex-wrap: wrap;
+      padding: 12px;
+    }
+
+    .btns button {
+      margin-right: 12px;
+      margin-bottom: 12px;
+    }
+
+    .gird1 {
+      background-color: #fff;
+      height: 800px;
+      display: grid;
+      grid-template-columns: auto auto 1fr auto;
+      grid-template-rows: auto 1fr auto;
+      grid-template-areas: "header header header header"
+        "left1 left2 content right"
+        "left1 left2 bottom bottom";
+      grid-row-gap: 10px;
+      grid-column-gap: 10px;
+    }
+
+    .item {
+      background-color: #ddd;
+    }
+
+    .item1 {
+      grid-area: header;
+      height: 50px;
+    }
+
+    .item2 {
+      grid-area: left1;
+      width: 50px;
+    }
+
+    .item3 {
+      grid-area: left2;
+      width: 100px;
+    }
+
+    .item4 {
+      grid-area: content;
+    }
+
+    .item5 {
+      grid-area: right;
+      width: 150px;
+    }
+
+    .item6 {
+      grid-area: bottom;
+      height: 200px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="btns">
+    <button onclick="test1()">test1</button>
+    <button onclick="test2()">test2</button>
+  </div>
+  <div class="gird1">
+    <div class="item item1"></div>
+    <div class="item item2"></div>
+    <div class="item item3"></div>
+    <div class="item item4"></div>
+    <div class="item item5"></div>
+    <div class="item item6"></div>
+  </div>
+  <script>
+    function test1() {
+
+    }
+
+    function test2() {
+
+    }
+  </script>
+</body>
+
+</html>
