@@ -35,14 +35,26 @@
   <div class="btns">
     <button onclick="test1()">video info</button>
     <button onclick="test2()">random current time</button>
-    <button onclick="test3()">random current time draw</button>
+    <button onclick="test3()">test can play</button>
+    <button onclick="test4()">null src</button>
+    <button onclick="test5()">change src</button>
+    <button onclick="test6()">random current time and draw</button>
   </div>
   <video class="video1" src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" controls></video>
-  <canvas id="canvas1" width="400" height="400"></canvas>
+  <div style="display: flex; flex-direction: row; flex-wrap: wrap;">
+    <canvas id="canvas1" width="400" height="400"></canvas>
+    <canvas id="canvas2" width="400" height="400"></canvas>
+    <canvas id="canvas3" width="400" height="400"></canvas>
+    <canvas id="canvas4" width="400" height="400"></canvas>
+    <canvas id="canvas5" width="400" height="400"></canvas>
+  </div>
   <script>
     // https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement
     // https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/video
     const video1 = document.querySelector('.video1');
+    video1.playbackRate = 4;
+    window.video1 = video1;
+    // video1.crossOrigin = "anonymous"
     function test1() {
       videoInfo(video1);
     }
@@ -58,24 +70,133 @@
       return time;
     }
 
-    function test3() {
-      const targetTime = test2();
-
+    function test6() {
       const video = video1;
-      const canvasWidth = 400;
-      const canvasHeight = 400;
-      const canvas = document.querySelector('#canvas1');
-      const ctx = canvas.getContext("2d");
+      const time = Math.random() * video.duration || 10;
+      console.log('currentTime:', video.currentTime, 'newCurrentTime:', time);
+      video.currentTime = time;
+      videoInfo(video);
 
-      const onFrameReady = (ev) => {
-        ctx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight, 0, 0, canvasWidth, canvasHeight * video.videoHeight / video.videoWidth);
+      drawVideoToCanvas(video, document.querySelector('#canvas2'));
+      setTimeout(() => {
+        console.log('setTimeout 0 drawVideoToCanvas');
+        drawVideoToCanvas(video, document.querySelector('#canvas3'));
+      });
+      requestAnimationFrame(() => {
+        console.log('requestAnimationFrame drawVideoToCanvas');
+        drawVideoToCanvas(video, document.querySelector('#canvas4'));
+      });
+      setTimeout(() => {
+        console.log('setTimeout 50 drawVideoToCanvas');
+        drawVideoToCanvas(video, document.querySelector('#canvas5'));
+      }, 50);
+    }
 
-        // 需要 crossorigin
-        const imageData = ctx.getImageData(0, 0, canvasWidth, canvasHeight);
-        console.log('imageData', imageData);
-      };
-      // 等待 currentTime 修改成功 seeked
-      video.addEventListener('timeupdate', onFrameReady);
+    function test3() {
+      // currentTime 改变之后 canplay 的事件触发跟视频解码性能有关
+      // canplay 触发之前调用 drawVideo 无法得到最新的帧
+      // 目前在 mac 测试单个 video 极限性能在每秒 canplay 回调 50 次左右
+      // 增加 video 数量并不能提高速度，反而每个 video 回调速度降低到 1 / count 以下，总体速度变低
+      // playbackRate 好像会影响 canplay 回调速度?
+      const count = 4;
+
+      const pendingSeekVideos = []
+      function batchVideoSeek(video, time) {
+        video.currentTime = time;
+        // pendingSeekVideos.push({
+        //   video,
+        //   time
+        // });
+        // if (pendingSeekVideos.length === 1) {
+        //   setTimeout(() => {
+        //     pendingSeekVideos.sort((a, b) => a.time - b.time);
+        //     for (const v of pendingSeekVideos) {
+        //       v.video.currentTime = v.time;
+        //     }
+        //     pendingSeekVideos.length = 0;
+        //   })
+        // }
+      }
+
+      function testVideoCanPlay(id, count, url, duration) {
+        const video = document.createElement('video');
+        video.muted = true;
+        video.preload = 'auto';
+        video.playbackRate = 4;
+        video.src = (url || 'https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4');// + '?id=' + id;
+        const useCanPlayEvent = true; //id === 0;
+
+        let seeking = video.seeking;
+        let interval = undefined;
+
+        // interval = setInterval(() => {
+        //   if (video.seeking !== seeking) {
+        //     console.log('video seeking change', id, video.seeking, 'old', seeking, Date.now());
+        //     seeking = video.seeking;
+        //   }
+        // }, 0);
+
+        setTimeout(() => {
+          const durationFrame = 1 / 30;
+          const dt = 1 / 30 * count;
+          const time = id * dt;
+          let canPlayCount = 0;
+          const startTime = Date.now();
+          duration = duration || video.duration
+
+          function onCanPlay() {
+            ++canPlayCount;
+            console.log('video', id, 'canplay', canPlayCount, 'currentTime:', video.currentTime, 'nextTime:', video.currentTime + dt, 'duration:', duration, Date.now());
+
+            if (video.currentTime < duration) {
+              let nextTime = video.currentTime + dt;
+              if (nextTime > duration) {
+                nextTime = duration;
+              }
+              // video.currentTime = nextTime;
+              videoSeek(video, nextTime)
+              // video.fastSeek(nextTime)
+            } else {
+              console.log('video', id, 'end', canPlayCount, `${canPlayCount / (Date.now() - startTime) * 1000}/s`)
+              clearInterval(interval);
+            }
+          }
+
+          function videoSeek(video, time) {
+            batchVideoSeek(video, time);
+            if (!useCanPlayEvent) {
+              setTimeout(onCanPlay, 60);
+            }
+          }
+
+          if (useCanPlayEvent) {
+            const events = ['canplay']//, 'canplaythrough', 'timeupdate', 'seeked']
+            video.addEventListener(events[id % events.length], onCanPlay);
+          }
+
+          // video.currentTime = time;
+          videoSeek(video, time)
+        }, 50)
+      }
+
+
+      // , 'https://archive.org/download/BigBuckBunny_124/Content/big_buck_bunny_720p_surround.mp4'
+      // 'https://mdn.github.io/learning-area/html/multimedia-and-embedding/video-and-audio-content/rabbit320.mp4'
+      const urls = ['https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4']
+      // const urls = ['https://mdn.github.io/learning-area/html/multimedia-and-embedding/video-and-audio-content/rabbit320.mp4']
+      for (let i = 0; i < count; ++i) {
+        testVideoCanPlay(i, count, urls[i % urls.length], 5);
+      }
+    }
+
+    function test4() {
+      const video = video1;
+      video.src = '';
+    }
+
+    function test5() {
+      const video = video1;
+      video.src = 'https://archive.org/download/BigBuckBunny_124/Content/big_buck_bunny_720p_surround.mp4';
     }
 
     function videoInit(video) {
@@ -143,16 +264,68 @@
         console.log('video seeked', ev);
         videoInfo(video);
       });
+
+      video.addEventListener('waiting', (ev) => {
+        console.log('video waiting', ev);
+        videoInfo(video);
+      });
+
+      video.addEventListener('error', (ev) => {
+        console.log('video error', ev);
+        videoInfo(video);
+      });
     }
 
     function videoInfo(video) {
-      console.log(video, 'duration:', video.duration, 'currentTime:', video.currentTime, 'played:', video.played, 'videoWidth:', video.videoWidth, 'videoHeight:', video.videoHeight,
-        'paused:', video.paused, 'ended:', video.ended, 'seekable:', video.seekable,
+      console.log('videoInfo', 'duration:', video.duration, 'currentTime:', video.currentTime, 'played:', video.played, 'videoWidth:', video.videoWidth, 'videoHeight:', video.videoHeight,
+        'paused:', video.paused, 'ended:', video.ended, 'seekable:', video.seekable, 'readyState:', video.readyState, 'buffered:', video.buffered
       );
+      console.log(video)
     }
 
     videoInfo(video1);
     videoInit(video1);
+
+    function drawVideoToCanvas(video, canvas) {
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight, 0, 0, canvas.width, canvas.height * video.videoHeight / video.videoWidth);
+    }
+
+    function drawVideoOnCanplay() {
+      // const targetTime = test2();
+
+      const video = video1;
+      video._isFirstLoad = true;
+      const canvas = document.querySelector('#canvas1');
+
+      const onFrameReady = (ev) => {
+        if (video._isFirstLoad) {
+          video._isFirstLoad = false;
+          // 视频加载之后第一帧立即画到 canvas 上的话是空白的
+          // 目前没找到任何一个事件代表画面已经出现
+          // 通过设置 currentTime 让其触发下一次 canplay 就可得到画面
+          video.currentTime = video.currentTime;
+          return;
+        }
+        drawVideoToCanvas(video, canvas);
+
+        // 需要 crossorigin
+        // const imageData = ctx.getImageData(0, 0, canvasWidth, canvasHeight);
+        // console.log('imageData', imageData);
+      };
+      // 等待 currentTime 修改成功 seeked
+      video.addEventListener('canplay', onFrameReady);
+
+      // video.addEventListener('canplay', () => {
+      //   setTimeout(() => {
+      //     console.log('draw first frame')
+      //     onFrameReady()
+      //   }, 1)
+      // })
+
+    }
+    // video1.currentTime = 0
+    drawVideoOnCanplay()
   </script>
 </body>
 

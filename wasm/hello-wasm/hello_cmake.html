@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="utf-8" />
-  <title>hello_module</title>
+  <title>hello_wasm_cmake</title>
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   <meta name="format-detection" content="telephone=no" />
@@ -39,8 +39,12 @@
 <body>
   <div class="btns">
     <button onclick="test_file1()">test_file1</button>
-    <button onclick="testFS()">testFS</button>
+    <button onclick="test_file2()">test_file2</button>
     <button onclick="test_file_stdin1()">test_file_stdin1</button>
+    <button onclick="test_pipe()">test_pipe</button>
+    <button onclick="test_pipe1()">test_pipe1</button>
+    <button onclick="test_pipe1_1()">test_pipe1_1</button>
+    <button onclick="test_pipe2()">test_pipe2</button>
     <button onclick="test_thread1()">test_thread1</button>
     <button onclick="test1()">test1</button>
     <button onclick="test2()">test2</button>
@@ -70,6 +74,32 @@
           //   console.log('stderr', code);
           // }
         );
+
+        // PIPEFS 为空时返回一个特定标记 让读取端可模拟阻塞
+        const originRead = mod.PIPEFS.stream_ops.read;
+        mod.PIPEFS.stream_ops.read = function (stream, buffer, offset, length, position) {
+          try {
+            return originRead(stream, buffer, offset, length, position);
+          } catch (err) {
+            if (err.errno === 6) {
+              if (stream.__ended || stream.node.pipe.__ended) {
+                return 0;
+              } else {
+                // 正常应该返回读取的字节数，这里返回 2^31 - 1 代表无数据 需要阻塞
+                console.log('wait pipe');
+                return 2147483647;
+              }
+            }
+          }
+        };
+
+        // 标记 stream 已经结束，不会再增加新数据
+        mod.FS.endStream = function (stream) {
+          stream.__ended = true;
+          if (stream.node && stream.node.pipe) {
+            stream.node.pipe.__ended = true;
+          }
+        };
       },
     }).then((mod) => {
 
@@ -83,16 +113,68 @@
       helloModule.test_file1();
     }
 
-    function test_file_stdin1() {
-      helloModule._test_file_stdin1();
-    }
-
-    function testFS() {
+    function test_file2() {
       // https://emscripten.org/docs/api_reference/Filesystem-API.html#filesystem-api
       const FS = helloModule.FS;
       FS.mkdir('/test');
       FS.writeFile('/test/test.txt', 'foobar');
+
+      helloModule._test_file2();
+
       console.log('readFile', FS.readFile('/test/test.txt', { encoding: 'utf8' }));
+    }
+
+    function test_file_stdin1() {
+      helloModule._test_file_stdin1();
+    }
+
+    function test_pipe() {
+      helloModule._test_pipe();
+    }
+
+    function test_pipe1() {
+      const FS = helloModule.FS;
+      const { readable_fd, writable_fd } = helloModule.PIPEFS.createPipe();
+
+      const data = 'hello pipe';
+      const buf = new Uint8Array(helloModule.lengthBytesUTF8(data) + 1);
+      const actualNumBytes = helloModule.stringToUTF8Array(data, buf, 0, buf.length);
+      const stream = FS.getStream(writable_fd);
+      console.log('writable_fd path:', stream.path)
+      FS.write(stream, buf, 0, actualNumBytes, undefined, undefined);
+
+      helloModule._test_pipe1(readable_fd);
+    }
+
+    function test_pipe1_1() {
+      const FS = helloModule.FS;
+      const { readable_fd, writable_fd } = helloModule.PIPEFS.createPipe();
+
+      helloModule._test_pipe1(readable_fd);
+
+      const data = 'hello pipe';
+      const buf = new Uint8Array(helloModule.lengthBytesUTF8(data) + 1);
+      const actualNumBytes = helloModule.stringToUTF8Array(data, buf, 0, buf.length);
+      const stream = FS.getStream(writable_fd);
+      console.log('writable_fd path:', stream.path)
+      FS.write(stream, buf, 0, actualNumBytes, undefined, undefined);
+    }
+
+    function test_pipe2() {
+      const FS = helloModule.FS;
+      const { readable_fd, writable_fd } = helloModule.PIPEFS.createPipe();
+
+      helloModule._test_pipe2(readable_fd);
+
+      setTimeout(() => {
+        const data = 'hello pipe';
+        const buf = new Uint8Array(helloModule.lengthBytesUTF8(data) + 1);
+        const actualNumBytes = helloModule.stringToUTF8Array(data, buf, 0, buf.length);
+        const stream = FS.getStream(writable_fd);
+        console.log('writable_fd path:', stream.path)
+        FS.write(stream, buf, 0, actualNumBytes, undefined, undefined);
+        FS.endStream(stream);
+      }, 1000)
     }
 
     function test_thread1() {

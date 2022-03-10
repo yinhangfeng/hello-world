@@ -65,6 +65,10 @@ https://emscripten.org/docs/porting/pthreads.html
 https://web.dev/coop-coep/
 https://developer.chrome.com/blog/enabling-shared-array-buffer/
 
+如果网站无法开启 COOP COEP 则可以使用 origin-trial token 仅限 chrome 92-103
+<meta http-equiv="origin-trial" content="TOKEN_GOES_HERE">
+https://developer.chrome.com/blog/enabling-shared-array-buffer/#origin-trial
+
 ## 异步
 ```
 emcc hello_async.cc -s MODULARIZE=1 -s EXPORT_NAME=HelloAsync -s EXPORTED_RUNTIME_METHODS="[ccall,cwrap,addFunction]" -s ASYNCIFY -s ALLOW_TABLE_GROWTH -sPTHREAD_POOL_SIZE=2 -pthread -gsource-map -o out/hello_async.js

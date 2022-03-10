@@ -29,8 +29,9 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Emscripten")
   target_link_options(hello_cmake PRIVATE
     -sMODULARIZE=1
     -sEXPORT_NAME=HelloCmake
-    -sEXPORTED_RUNTIME_METHODS=[FS,cwrap,ccall]
+    -sEXPORTED_RUNTIME_METHODS=[FS,PIPEFS,cwrap,ccall,lengthBytesUTF8,stringToUTF8Array]
     -sPTHREAD_POOL_SIZE=navigator.hardwareConcurrency
+    -sVERBOSE=1
     --bind
   )
   # -gsource-map 不能放在 target_link_options 中

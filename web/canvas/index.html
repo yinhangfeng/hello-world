@@ -5,16 +5,19 @@
 </head>
 
 <body>
-  <canvas id="canvas" width="150" height="150"></canvas>
+  <div
+    style="width: 400px; height: 400px; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: #ddd;">
+    <canvas id="canvas" width="150" height="150" style="background-color: #dfd;"></canvas>
+  </div>
 
   <script>
     function draw() {
       const canvas = document.getElementById("canvas");
       const ctx = canvas.getContext("2d");
-  
+
       ctx.fillStyle = "rgb(200,0,0)";
       ctx.fillRect(10, 10, 55, 50);
-  
+
       ctx.fillStyle = "rgba(0, 0, 200, 0.5)";
       ctx.fillRect(30, 30, 55, 50);
 
@@ -32,7 +35,7 @@
       ctx.arc(90, 65, 5, 0, Math.PI * 2, true);  // 右眼
       ctx.stroke();
     }
-  
+
     window.addEventListener('load', () => {
       draw();
     });
