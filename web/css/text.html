@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <title>text test</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .btns {
+      display: flex;
+      flex-wrap: wrap;
+      padding: 12px;
+    }
+
+    .btns button {
+      margin-right: 12px;
+      margin-bottom: 12px;
+    }
+
+    .div1 {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      width: 300px;
+      height: 300px;
+      background-color: #ddd;
+      border: 1px solid #aaa;
+    }
+
+    .div2 {
+      position: absolute;
+      left: 0;
+      top: 0;
+      min-width: 100vw;
+    }
+
+    .text {
+      position: absolute;
+      left: 0;
+      top: 0;
+      white-space: pre-wrap;
+      text-align: center;
+    }
+
+    .text2 {
+      height: 300px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="btns">
+    <button onclick="test1()">test1</button>
+    <button onclick="test2()">test2</button>
+  </div>
+  <div class="div1">
+    <div class="div2">
+      <div class="text">文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本
+文本文本文本文本文本文本文本
+文本
+
+文本文本文本文本文本文本文本文本文本文本文本文本</div>
+    </div>
+  </div>
+  <div class="div1">
+    <div class="div2">
+      <div class="text text2">文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本
+文本文本文本文本文本文本文本
+文本
+
+文本文本文本文本文本文本文本文本文本文本文本文本</div>
+    </div>
+  </div>
+  <script>
+    function test1() {
+
+    }
+
+    function test2() {
+
+    }
+  </script>
+</body>
+
+</html>
