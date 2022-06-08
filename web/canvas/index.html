@@ -7,13 +7,24 @@
 <body>
   <div
     style="width: 400px; height: 400px; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: #ddd;">
-    <canvas id="canvas" width="150" height="150" style="background-color: #dfd;"></canvas>
+    <canvas id="canvas" width="300" height="300" style="background-color: #dfd;"></canvas>
+  </div>
+  <div style="width: 100px; height: 100px; background-color: #ddf;">
+    100x100px
+  </div>
+  <div id="info">
+
   </div>
 
   <script>
+    const info = document.getElementById('info');
+    info.innerText = `devicePixelRatio: ${window.devicePixelRatio}`;
+
     function draw() {
       const canvas = document.getElementById("canvas");
       const ctx = canvas.getContext("2d");
+
+      ctx.fillRect(0, 0, 100, 100);
 
       ctx.fillStyle = "rgb(200,0,0)";
       ctx.fillRect(10, 10, 55, 50);

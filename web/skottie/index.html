@@ -1,0 +1,67 @@
+<html>
+
+<head>
+  <title>Skottie</title>
+  <script type="text/javascript" src="./node_modules/canvaskit-wasm/bin/full/canvaskit.js"></script>
+</head>
+
+<body>
+  <canvas id="canvas1" width="300" height="300"></canvas>
+  <script type="text/javascript">
+    const canvas = document.querySelector('#canvas1')
+    let CanvasKit
+    const ckLoaded = CanvasKitInit({
+      // locateFile: (file) => './node_modules/canvaskit-wasm/bin/full/' + file,
+    });
+    ckLoaded.then((ck) => {
+      CanvasKit = ck;
+
+      initSkottie();
+    });
+
+    async function getLottie(file = 'lottie1.json') {
+      const res = await fetch(`./${file}`);
+      return res.text()
+    }
+
+    async function initSkottie() {
+      const surface = CanvasKit.MakeCanvasSurface(canvas);
+      const skcanvas = surface.getCanvas();
+
+      const lottieJson = await getLottie();
+
+      const animation = CanvasKit.MakeManagedAnimation(lottieJson);
+
+      if (!animation) {
+        console.error('MakeManagedAnimation failed');
+        return;
+      }
+
+      const duration = animation.duration() * 1000;
+      console.log('lottie animation info');
+      console.log('duration:', `${duration}ms`);
+      console.log('fps:', `${animation.fps()}`);
+      console.log('====================')
+
+      const firstFrame = Date.now();
+      function drawFrame() {
+        const seek = ((Date.now() - firstFrame) / duration) % 1.0;
+
+        animation.seek(seek);
+        // const bounds = CanvasKit.LTRBRect(0, 0, canvas.width, canvas.height);
+        const bounds = CanvasKit.LTRBRect(0, 0, surface.width(), surface.height());
+        animation.render(surface.getCanvas(), bounds);
+        // animation.render(skcanvas);
+        surface.flush();
+
+        // surface.requestAnimationFrame(drawFrame);
+        window.requestAnimationFrame(drawFrame);
+      }
+
+      // surface.requestAnimationFrame(drawFrame);
+      window.requestAnimationFrame(drawFrame);
+    }
+  </script>
+</body>
+
+</html>
