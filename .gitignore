@@ -8,6 +8,7 @@ build
 *.iws
 
 .gradle
+gradle-wrapper.jar
 .vscode
 local.properties
 npm-debug.log
