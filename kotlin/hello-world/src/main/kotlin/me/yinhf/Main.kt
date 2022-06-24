@@ -10,7 +10,7 @@ fun test1() {
 
     // 使用匿名函数达到与 lambda 等价效果
     functionLiteralsWithReceiver(fun(test1: Test1, v: Int): Int {
-        println("functionLiteralsWithReceiver callback ${test1.a}")
+        println("functionLiteralsWithReceiver callback ${test1.a} ${v}")
         return 2
     })
 
@@ -38,7 +38,7 @@ fun test1() {
 //        }
 //    })
 
-    var fun1 = object : Test1() {
+    val fun1 = object : Test1() {
         override fun invoke(v: Int): Int {
             println("functionLiteralsWithReceiver callback")
             return v + 1
@@ -47,7 +47,7 @@ fun test1() {
 
     samCallback(fun1::invoke)
 
-    var fun2 = ITest1 {
+    val fun2 = ITest1 {
         println("functionLiteralsWithReceiver callback")
         it + 1
     }
@@ -57,16 +57,19 @@ fun test1() {
 
 
 fun main(args: Array<String>) {
-    test1()
-
-    var a: String? = ""
-
-    var b = a?.length ?: -1
-    var c = a!!.length
-    var d = c as? Int
-
-
     // Try adding program arguments via Run/Debug configuration.
     // Learn more about running applications: https://www.jetbrains.com/help/idea/running-applications.html.
     println("Program arguments: ${args.joinToString()}")
+//    val name = readln()
+//    println("Hello, $name!")
+
+    test1()
+
+//    var a: String? = ""
+//
+//    var b = a?.length ?: -1
+//    var c = a!!.length
+//    var d = c as? Int
+
+
 }
