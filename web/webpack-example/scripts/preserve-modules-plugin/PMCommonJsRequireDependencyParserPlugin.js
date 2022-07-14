@@ -42,26 +42,28 @@ class PMCommonJsRequireDependencyParserPlugin {
       return true;
     };
 
-    parser.hooks.expression.for('require').tap('PMCommonJsRequireDependencyParserPlugin', expr => {
-      const dep = new CommonJsRequireContextDependency(
-        {
-          request: options.unknownContextRequest,
-          recursive: options.unknownContextRecursive,
-          regExp: options.unknownContextRegExp,
-          mode: 'sync',
-        },
-        expr.range
-      );
-      dep.critical =
-        options.unknownContextCritical &&
-        'require function is used in a way in which dependencies cannot be statically extracted';
-      dep.loc = expr.loc;
-      dep.optional = !!parser.scope.inTry;
-      parser.state.current.addDependency(dep);
-      return true;
-    });
+    parser.hooks.expression
+      .for('require')
+      .tap('PMCommonJsRequireDependencyParserPlugin', (expr) => {
+        const dep = new CommonJsRequireContextDependency(
+          {
+            request: options.unknownContextRequest,
+            recursive: options.unknownContextRecursive,
+            regExp: options.unknownContextRegExp,
+            mode: 'sync',
+          },
+          expr.range
+        );
+        dep.critical =
+          options.unknownContextCritical &&
+          'require function is used in a way in which dependencies cannot be statically extracted';
+        dep.loc = expr.loc;
+        dep.optional = !!parser.scope.inTry;
+        parser.state.current.addDependency(dep);
+        return true;
+      });
 
-    const createHandler = callNew => expr => {
+    const createHandler = (callNew) => (expr) => {
       if (expr.arguments.length !== 1) return;
       let localModule;
       const param = parser.evaluateExpression(expr.arguments[0]);
@@ -85,7 +87,10 @@ class PMCommonJsRequireDependencyParserPlugin {
       }
       if (
         param.isString() &&
-        (localModule = LocalModulesHelpers.getLocalModule(parser.state, param.string))
+        (localModule = LocalModulesHelpers.getLocalModule(
+          parser.state,
+          param.string
+        ))
       ) {
         // const dep = new LocalModuleDependency(localModule, expr.range, callNew);
         // dep.loc = expr.loc;

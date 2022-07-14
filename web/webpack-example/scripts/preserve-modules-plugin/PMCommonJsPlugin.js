@@ -12,13 +12,19 @@ class PMCommonJsPlugin {
 
   apply(compilation, { contextModuleFactory, normalModuleFactory }) {
     const options = this.options;
-    compilation.dependencyFactories.set(PMCommonJsRequireDependency, normalModuleFactory);
+    compilation.dependencyFactories.set(
+      PMCommonJsRequireDependency,
+      normalModuleFactory
+    );
     compilation.dependencyTemplates.set(
       PMCommonJsRequireDependency,
       new PMCommonJsRequireDependency.Template(options.getModuleRequirePath)
     );
 
-    compilation.dependencyFactories.set(CommonJsRequireContextDependency, contextModuleFactory);
+    compilation.dependencyFactories.set(
+      CommonJsRequireContextDependency,
+      contextModuleFactory
+    );
     compilation.dependencyTemplates.set(
       CommonJsRequireContextDependency,
       new NullTemplate()
@@ -26,7 +32,10 @@ class PMCommonJsPlugin {
       // new CommonJsRequireContextDependency.Template()
     );
 
-    compilation.dependencyFactories.set(RequireResolveDependency, normalModuleFactory);
+    compilation.dependencyFactories.set(
+      RequireResolveDependency,
+      normalModuleFactory
+    );
     compilation.dependencyTemplates.set(
       RequireResolveDependency,
       // TODO
@@ -34,13 +43,18 @@ class PMCommonJsPlugin {
     );
 
     const handler = (parser, parserOptions) => {
-      if (parserOptions.commonjs !== undefined && !parserOptions.commonjs) return;
+      if (parserOptions.commonjs !== undefined && !parserOptions.commonjs)
+        return;
 
       new PMCommonJsRequireDependencyParserPlugin(options.module).apply(parser);
     };
 
-    normalModuleFactory.hooks.parser.for('javascript/auto').tap('PMCommonJsPlugin', handler);
-    normalModuleFactory.hooks.parser.for('javascript/dynamic').tap('PMCommonJsPlugin', handler);
+    normalModuleFactory.hooks.parser
+      .for('javascript/auto')
+      .tap('PMCommonJsPlugin', handler);
+    normalModuleFactory.hooks.parser
+      .for('javascript/dynamic')
+      .tap('PMCommonJsPlugin', handler);
   }
 }
 

@@ -1,5 +1,4 @@
 const ModuleDependency = require('webpack/lib/dependencies/ModuleDependency');
-const applyRawModule = require('./applyRawModule');
 
 class PMCommonJsRequireDependency extends ModuleDependency {
   constructor(request, range, originModule) {
@@ -23,9 +22,6 @@ PMCommonJsRequireDependency.Template = class PMCommonJsRequireDependencyTemplate
     }
     if (!dep.originModule.context) {
       return;
-    }
-    if (!dep.module.resource) {
-      applyRawModule(dep.module);
     }
     source.replace(
       dep.range[0] + 1,

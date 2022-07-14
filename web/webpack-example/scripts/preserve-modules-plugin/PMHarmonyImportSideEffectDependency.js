@@ -1,5 +1,4 @@
 const ModuleDependency = require('webpack/lib/dependencies/ModuleDependency');
-const applyRawModule = require('./applyRawModule');
 
 class PMHarmonyImportSideEffectDependency extends ModuleDependency {
   constructor(request, range, originModule) {
@@ -23,9 +22,6 @@ PMHarmonyImportSideEffectDependency.Template = class PMHarmonyImportSideEffectDe
       // https://github.com/webpack/webpack/blob/webpack-4/lib/dependencies/HarmonyImportDependency.js#L106
       // https://github.com/webpack/webpack/blob/webpack-4/lib/RuntimeTemplate.js#L205
       return;
-    }
-    if (!dep.module.resource) {
-      applyRawModule(dep.module);
     }
     source.replace(
       dep.range[0] + 1,
