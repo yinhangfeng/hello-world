@@ -65,6 +65,8 @@ fun main(args: Array<String>) {
 
     test1()
 
+    coroutineTest5()
+
 //    var a: String? = ""
 //
 //    var b = a?.length ?: -1
