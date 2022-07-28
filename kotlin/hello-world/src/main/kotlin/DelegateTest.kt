@@ -1,5 +1,3 @@
-package me.yinhf
-
 private var topLevelInt: Int = 0
 
 class ClassWithDelegate(val anotherClassInt: Int)

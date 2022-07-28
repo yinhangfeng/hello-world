@@ -1,5 +1,3 @@
-package me.yinhf
-
 fun test1() {
     functionLiteralsWithReceiver { v ->
         // Function literals with receiver 无法访问 receiver 中 protected 和 private 成员

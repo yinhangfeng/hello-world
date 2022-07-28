@@ -1,5 +1,3 @@
-package me.yinhf
-
 import java.util.*
 
 fun callJava1(source: List<Int>) {

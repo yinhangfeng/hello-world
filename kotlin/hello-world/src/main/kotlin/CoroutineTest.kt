@@ -1,8 +1,4 @@
-package me.yinhf
-
 import kotlinx.coroutines.*
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import kotlin.concurrent.thread
 import kotlin.system.measureTimeMillis
 
@@ -158,6 +154,15 @@ fun coroutineTest6() {
 //                }
             }
         }
+    }
+}
+
+fun coroutineTest7() {
+    println("coroutineTest7 ${Thread.currentThread()}")
+    val scope = CoroutineScope(Dispatchers.Default);
+    val res = scope.async {
+        println("async1 ${Thread.currentThread()}")
+        3
     }
 }
 
