@@ -26,7 +26,7 @@ fun coroutineTest1() {
     }
 
     suspend fun test1() {
-        coroutineScope {  // this: CoroutineScope
+        coroutineScope {
             val job = launch {
                 doWorld()
             }
