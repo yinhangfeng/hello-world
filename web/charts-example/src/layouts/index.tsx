@@ -12,7 +12,7 @@ export default function Layout() {
           <Link to="/d3">D3 example</Link>
         </li>
         <li>
-          <Link to="/docs">Docs</Link>
+          <Link to="/g2">G2 example</Link>
         </li>
       </ul>
       <Outlet />

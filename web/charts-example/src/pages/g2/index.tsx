@@ -10,7 +10,7 @@ export default function Page() {
   }, []);
   return (
     <div>
-      <h1 className={styles.title}>D3 Line Chart</h1>
+      <h1 className={styles.title}>G2 Line Chart</h1>
       {data && (
         <LineChart
           data={data}

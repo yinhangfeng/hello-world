@@ -27,8 +27,11 @@ class Misc1Test {
                 println("launch end isActive: $isActive")
             }
 
+            println("launch job: $job isActive: ${job.isActive} isCompleted: ${job.isCompleted} isCancelled: ${job.isCancelled}")
+
             delay(500)
             job.cancel(CancellationException("xxx"))
+            println("launch job after cancel: $job isActive: ${job.isActive} isCompleted: ${job.isCompleted} isCancelled: ${job.isCancelled}")
             job.join()
             println("end")
         }
