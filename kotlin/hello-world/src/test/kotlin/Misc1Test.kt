@@ -40,9 +40,9 @@ class Misc1Test {
     @Test
     fun testCoroutine3() {
         runBlocking {
-            val scopeJob = Job()
+//            val scopeJob = Job()
             // 如果使用 SupervisorJob 则某个子的 launch 异常不会导致整个 scope 结束
-//            val scopeJob = SupervisorJob()
+            val scopeJob = SupervisorJob()
             var context = Dispatchers.Default + scopeJob + CoroutineName("test")
             context += CoroutineExceptionHandler { context, err ->
                 println("coroutine err: $err ${Thread.currentThread().name} $context")
@@ -82,6 +82,8 @@ class Misc1Test {
 
             println("testCoroutine3 delay ${Thread.currentThread().name}")
             delay(2000)
+
+//            mainTestScope.cancel()
 
             // 如果 mainTestScope 已经因为异常而结束，则无法再 launch
             mainTestScope.launch {
