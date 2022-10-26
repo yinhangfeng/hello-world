@@ -131,4 +131,9 @@ class Misc1Test {
             channel.close()
         }
     }
+
+    @Test
+    fun testComparable() {
+        val aaa: Comparable<*> = 1 as Comparable<Any>
+    }
 }
