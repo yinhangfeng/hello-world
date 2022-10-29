@@ -31,6 +31,8 @@ data class Config(
     @Description(["Name for this project."])
     val name: String = "",
     val xxx: String,
+    val xxx1: String?,
+    val xxx2: String? = null,
 //    @Description(["Theme for this project."])
 //    val theme: Theme = Theme()
 ) : BaseConfig()

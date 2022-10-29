@@ -25,6 +25,7 @@ class AnnotationTest {
             println(it.annotations)
 //            println(it.get(aaa as Cls1))
             println(p.get(aaa))
+            println(p.returnType)
         }
 
     }

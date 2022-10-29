@@ -136,4 +136,12 @@ class Misc1Test {
     fun testComparable() {
         val aaa: Comparable<*> = 1 as Comparable<Any>
     }
+
+    @Test
+    fun testArray1() {
+        val arr = arrayOf(1, 2, 3)
+        val arr1 = arr.drop(1).toTypedArray()
+
+        println("${arr.contentToString()} ${arr1.contentToString()}")
+    }
 }
