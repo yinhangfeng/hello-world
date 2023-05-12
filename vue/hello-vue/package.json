@@ -13,6 +13,9 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "@arco-design/web-vue": "^2.45.3",
+    "dayjs": "^1.11.7",
+    "lodash-es": "^4.17.21",
     "pinia": "^2.0.32",
     "vue": "^3.2.47",
     "vue-router": "^4.1.6"
@@ -20,6 +23,7 @@
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.2.0",
     "@types/jsdom": "^21.1.0",
+    "@types/lodash-es": "^4.17.7",
     "@types/node": "^18.14.2",
     "@vitejs/plugin-vue": "^4.0.0",
     "@vitejs/plugin-vue-jsx": "^3.0.0",

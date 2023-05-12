@@ -53,21 +53,6 @@ export default defineComponent({
   }
 });
 </script>
-<template>
-  <Component1 :class="$style.container">
-    <template #header="headerProps">
-      <slot name="header" v-bind="headerProps"></slot>
-    </template>
-    <template #default="defaultProps">
-      <slot v-bind="defaultProps"></slot>
-      <div>Component3 default slot props: {{ props }}</div>
-      <button @click.stop="emit('e3')">e3</button>
-    </template>
-    <template #footer="footProps">
-      <slot name="footer" v-bind="footProps"></slot>
-    </template>
-  </Component1>
-</template>
 <style module>
 .container {
 }
